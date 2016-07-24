@@ -1,5 +1,5 @@
 #include "canApp.h"
-
+#include "canTask.h"
 #include "stm32f4xx.h"
 #include <rtthread.h>
 #include "string.h"
@@ -428,13 +428,12 @@ void CanApp::TriggerMsgUpdate_data(uint8_t frame)
 * Output         : None
 * Return         : None
 *******************************************************************************/
-extern void Bsp_can_send_trigger_event(void);
 void CanApp::SendCan(uint8_t frame)
 {
 	if(frame < CAN_STD_FRAME_NUM)
 	{
 		can.TriggerMsgUpdate_data(frame);
-//		Bsp_can_send_trigger_event();
+		Bsp_can_send_trigger_event();
 	}
 }
 
@@ -525,4 +524,43 @@ void can_Rx_Msg(uint8_t port, CanRxMsg* msg)
 	
 	can.CanCnt++;
 	
+}
+
+/*******************************************************************************
+* Function Name  : void CanApp_CycleStream_Server(void)
+* Description    : 负责 应用层与链路层 数据的定时更新
+*                   
+* Input          : None
+* Output         : None
+* Return         : None   xiangchuanyu
+*******************************************************************************/
+void CanApp_CycleStream_Server(void)
+{
+	static uint8_t TimeCnt = 0;
+	
+	//-----------------------------------------------------------
+	// 更新CAN数据发送接收缓冲区
+	//-----------------------------------------------------------
+	can.CycleMsgUpdate_data();
+	if(++TimeCnt >= 10)
+	{
+		TimeCnt = 0;
+	}
+	//-----------------------------------------------------------
+	// 管理发送CAN数据帧
+	//-----------------------------------------------------------
+	can.CycleMsgPush();
+}
+
+/*******************************************************************************
+* Function Name  : void CanApp_TriggerStream_Server(void)
+* Description    : 负责 应用层与链路层 数据的定时更新
+*                   
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void CanApp_TriggerStream_Server(void)
+{
+	can.TriggerMsgPush();
 }

@@ -5,6 +5,12 @@
 extern "C" {
 #endif
 
+//------------------------------------------------------------------
+// Event
+//------------------------------------------------------------------
+#define CanTask_Event_Cycle        ((uint32_t)0x01)
+#define CanTask_Event_Trigger      ((uint32_t)0x02)
+	
 #define CAN_TX_THREAD_STACK 1024
 #define CAN_TX_THREAD_PRI   9//10
 #define CAN_TX_THREAD_SLICE 15
@@ -18,6 +24,7 @@ extern "C" {
 	
 void can_rx_thread_init(void);
 void can_tx_thread_init(void);
+void Bsp_can_send_trigger_event(void);
 	
 #ifdef __cplusplus
 }

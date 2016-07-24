@@ -3,16 +3,15 @@
 
 #include "stm32f4xx.h"
 #include <rtthread.h>
-//#include "canLinker.h"
 #include "MB_DataStruct.h"
 
 typedef union{
 	u32 extIDDW;
 	struct{
-		u16 classID:				4;	//??
-		u16 packetID:				5;
-		u16 sourceID:				5;
-		u16 res:						2;
+		u16 classID:			4;	
+		u16 packetID:			5;
+		u16 sourceID:			5;
+		u16 res:					2;
 		u16 sinkID:				5;
 		u16 func:					5;
 		u16 prio:					3;
@@ -47,9 +46,9 @@ typedef struct _std_msg_config
 {
 	uint8_t  canPort    :  4 ;
 	uint8_t  direction  :  4 ;
-	uint8_t  Dest       :  5 ; //Txer ID
-	uint8_t  Src        :  5 ; //Rxer ID
-	uint8_t  FuncID     :  5 ; //function ID
+	uint8_t  Dest       :  5 ;
+	uint8_t  Src        :  5 ;
+	uint8_t  FuncID     :  5 ;
 	uint8_t  len;
 	uint16_t clock;
 	uint16_t sendTick;

@@ -13,6 +13,8 @@ void relays_refresh(void);
 void data_deal(void);
 void slow_check(void);
 void * GetDataPtr(void);
+void CanApp_TriggerStream_Server(void);
+void CanApp_CycleStream_Server(void);
 void can_Rx_Msg(uint8_t port, CanRxMsg* msg);
 
 #ifdef __cplusplus

@@ -241,11 +241,11 @@ uint32_t can_send_buffer(uint8_t port, CanTxMsg* msg)
         if(tx_buffer != RT_NULL)
         {
             tx_buffer->parent.CanPort = port;
-			tx_buffer->data.StdId = msg->StdId;
-			tx_buffer->data.ExtId = msg->ExtId;
-			tx_buffer->data.IDE = msg->IDE;
-			tx_buffer->data.RTR = msg->RTR;
-			tx_buffer->data.DLC = msg->DLC;
+						tx_buffer->data.StdId = msg->StdId;
+						tx_buffer->data.ExtId = msg->ExtId;
+						tx_buffer->data.IDE = msg->IDE;
+						tx_buffer->data.RTR = msg->RTR;
+						tx_buffer->data.DLC = msg->DLC;
             tx_buffer->data.Data[0] = tmp[0];
             tx_buffer->data.Data[1] = tmp[1];
             tx_buffer->data.Data[2] = tmp[2];

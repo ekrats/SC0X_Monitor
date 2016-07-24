@@ -13,6 +13,158 @@ static rt_uint8_t can1_rx_thread_stack[CAN_RX_THREAD_STACK];
 static struct rt_thread can2_rx_thread;
 static rt_uint8_t can2_rx_thread_stack[CAN_RX_THREAD_STACK];
 
+//------------------------------------------------------------------
+// 开始通讯
+//------------------------------------------------------------------
+uint8_t CanStartComm = 0;
+//------------------------------------------------------------------
+// 控制主逻辑运算的事件变量
+//------------------------------------------------------------------
+static struct rt_event EventCanSend;
+//------------------------------------------------------------------
+// 收取事件的变量
+//------------------------------------------------------------------
+static rt_uint32_t _ev_cansend_flag = 0;
+//------------------------------------------------------------------
+// 事件变量 初始化结果。只有EventCanSend正确初始化后，才可以Send Event
+//------------------------------------------------------------------
+static __IO rt_err_t _ev_cansend_init = 0xFF;
+
+/*******************************************************************************
+* Function Name  :  
+* Description    :
+*
+*
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void Bsp_can_send_cycle_event(void)
+{
+	if((_ev_cansend_init == RT_EOK) && (CanStartComm == 1))
+	{
+		rt_event_send(&EventCanSend, CanTask_Event_Cycle);
+	}
+}
+
+/*******************************************************************************
+* Function Name  :  
+* Description    :
+*
+*
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void Bsp_can_send_trigger_event(void)
+{
+	if((_ev_cansend_init == RT_EOK) && (CanStartComm == 1))
+	{
+		rt_event_send(&EventCanSend, CanTask_Event_Trigger);
+	}
+}
+
+/*******************************************************************************
+* Function Name  :  
+* Description    :         
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+static void Bsp_can_check_event(void)
+{
+	if(CanStartComm == 0)   return;
+
+	rt_event_recv(&EventCanSend,
+		(CanTask_Event_Cycle | CanTask_Event_Trigger),
+		(RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR),
+		RT_WAITING_FOREVER,
+		&_ev_cansend_flag);
+}
+
+/*******************************************************************************
+* Function Name  :  
+* Description    :
+*
+*
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+static void Bsp_can_event_init(void)
+{
+	_ev_cansend_init = rt_event_init(&EventCanSend, "E_Can", RT_IPC_FLAG_FIFO);
+}
+
+//static void Bsp_can_led(void)
+//{
+//	if(can.CanStateWord > 0)
+//	{
+//		if(GPIOA->ODR & GPIO_Pin_11)
+//		{
+//			GPIOA->BSRRH = GPIO_Pin_11;//LED2
+//		}
+//		else
+//		{
+//			GPIOA->BSRRL = GPIO_Pin_11;
+//		}
+//	}
+//	else
+//	{
+//		GPIOA->BSRRL  = GPIO_Pin_11;
+//	}
+//}
+
+/*******************************************************************************
+* Function Name  :  
+* Description    :
+*
+*
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+//static void Bsp_can_fault(void)
+//{
+//	uint8_t portScan = 0;
+//	//------------------------------------------------------
+//	// 持续没有CAN没有接收到数据，判断CAN通讯丢失
+//	//------------------------------------------------------
+//	for(portScan = 0; portScan < 6; portScan++)
+//	{
+//		can.CanFltCnt[portScan]++;
+
+//		if(can.CanFltCnt[portScan] >= CAN_RX_TIME)
+//		{
+//			can.CanFltCnt[portScan] = CAN_RX_TIME;
+//			//-----------------------------------------------------
+//			// CAN接收1异常
+//			//-----------------------------------------------------
+//			can.CanStateWord &= ~(uint16_t)(0x0001 << portScan);
+//		}
+//		else
+//		{
+//			//-----------------------------------------------------
+//			// CAN接收1正常
+//			//-----------------------------------------------------
+//			can.CanStateWord |= (uint16_t)(0x0001 << portScan);
+//		}
+//	}
+//	
+//	MB_LGA.MB_SYS_INFO.AdFault = (~can.CanStateWord) & 0x0020;
+//	can.CanCnt ++;
+//	
+//	if (can.CanCnt >= CAN_RX_TIME)
+//	{
+//		can.CanCnt = CAN_RX_TIME;
+//		MB_LGA.MB_SYS_INFO.CanFault = 1; 
+//	}
+//	else
+//	{
+//		MB_LGA.MB_SYS_INFO.CanFault = 0;
+//	}
+//}
+
 //================================================================
 //Function Name: 
 //Description  :can发送线程入口程序
@@ -22,19 +174,48 @@ static rt_uint8_t can2_rx_thread_stack[CAN_RX_THREAD_STACK];
 //================================================================
 static void can_tx_thread_entry(void* parameter)
 {
-    static uint8_t cnt = 0;
-	while (1)
-    {
-//        if (++cnt >=10)
-//		{
-//			CanTxDataUpdate(&can);
-//			cnt = 0;
-//		}
-//		
-//        CanBurstACK(&can);
+    static uint8_t timeDelay = 0;
 
-        rt_thread_delay(CAN_TX_THREAD_DELAY);
-    }
+	for(;;)
+	{
+		//------------------------------------------------------
+		// 捕获事件信号
+		//------------------------------------------------------
+		Bsp_can_check_event();
+
+		//------------------------------------------------------
+		// 处理事件周期事件
+		//------------------------------------------------------
+		if (_ev_cansend_flag & CanTask_Event_Cycle)
+		{
+			//-----------------------------------------------------
+			// can周期数据发送服务
+			//-----------------------------------------------------
+			CanApp_CycleStream_Server();
+			//-----------------------------------------------------
+			// can故障判断
+			//-----------------------------------------------------
+			//Bsp_can_fault();
+			//-----------------------------------------------------
+			// can指示灯
+			//-----------------------------------------------------
+			if(++timeDelay % 50 == 0)
+			{
+				timeDelay = 0;
+				//Bsp_can_led();
+			}
+		}
+		//------------------------------------------------------
+		// 处理触发事件
+		//------------------------------------------------------
+		if(_ev_cansend_flag & CanTask_Event_Trigger)
+		{
+			//-----------------------------------------------------
+			// can触发数据发送服务
+			//-----------------------------------------------------
+			CanApp_TriggerStream_Server();
+		}
+	}
 }
 
 //================================================================
@@ -60,6 +241,7 @@ void can_tx_thread_init(void)
         rt_kprintf("can_tx_thread init fail\n");
 #endif
     }
+		CanStartComm = 1;
 }
 
 //================================================================
