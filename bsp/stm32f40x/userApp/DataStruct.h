@@ -2,6 +2,8 @@
 #define _DataStruct_h_
 
 #include "stdint.h"
+#include "hmi_def.h"
+#include "can_app_def.h"
 
 enum _io_input_index_{
 	cabinetEnN,
@@ -33,9 +35,10 @@ enum _io_output_index_{
 	mainCon1,
 	mainCon2,
 };
-typedef union {
+
+typedef union _io_output_{
 	int out[9];
-	typedef struct{
+	struct{
 		int outCon1;
 		int outCon2;
 		int outCon3;
@@ -48,9 +51,9 @@ typedef union {
 	}out_32;
 }io_output_type;
 
-typedef union{
+typedef union _io_input_{
 	int in[16];
-	typedef struct{
+	struct{
 		int cabinetEn;
 		int inFuse1;
 		int inFuse2;
@@ -177,6 +180,23 @@ typedef struct{
 typedef struct{
 	DataInput 	input;
 	DataOutput	output;
+	CAN_CB_Status_STYP cb1Status;
+	CAN_CB_Status_STYP cb2Status;
+	CAN_CB_Status_STYP cb3Status;
+	CAN_CB_Status_STYP cb4Status;
+	CAN_CB_Status_STYP cb5Status;
+	CB_Para_STYP	Cb1Para;
+	CB_Para_STYP	Cb2Para;
+	CB_Para_STYP	Cb3Para;
+	CB_Para_STYP	Cb4Para;
+	CB_Para_STYP	Cb5Para;
+	CB_Para_STYP	Cb1WPara;
+	CB_Para_STYP	Cb2WPara;
+	CB_Para_STYP	Cb3WPara;
+	CB_Para_STYP	Cb4WPara;
+	CB_Para_STYP	Cb5WPara;
+	HMI_TYPE 	hmi;
+	canAppBuf_config canAppBuf;
 }ScData;
 
 #endif

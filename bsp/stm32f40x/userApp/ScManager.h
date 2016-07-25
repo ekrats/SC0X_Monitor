@@ -2,6 +2,7 @@
 #include "Failure.h"
 #include "RelayModule.h"
 #include "DataStruct.h"
+#include "canApp.h"
 
 class ScManager : public Sc
 {
@@ -17,11 +18,13 @@ public:
 	void ContactCheck(void);
 	void ContactRelayRun(void);
 	
+	void SetCan(CanApp & pCan);
 	void SlowCheck(void);
 	void MonitorCheckSlow(void);
 	void FaultCheckModuleInit(void);
 		
 private:
+	CanApp can;
 	List<Failure*> warnList;
     List<Failure*> failureList;
     RelayModule relays;
@@ -32,6 +35,5 @@ private:
     
 	bool warnListLock;
 	bool faultListLock;
-public:
-	ScData shareData;
+
 };

@@ -4,6 +4,9 @@
 #include "Contactor.h"
 #include "List.h"
 #include "PT100.h"
+#include "hmi_def.h"
+#include "can_app_def.h"
+#include "DataStruct.h"
 
 class Sc
 {
@@ -18,6 +21,7 @@ protected:
 	List<Contactor*> ContactList;
 	List<PT100*> pt100List;
 public:
+
 	DCTransducer input1Current;
 	DCTransducer input2Current;
 	DCTransducer inputAc1Voltage;
@@ -47,4 +51,7 @@ public:
 	Contactor	outCon3;
 	Contactor	outCon4;
 	Contactor	outCon5;
+	
+public:
+	ScData shareData;
 };

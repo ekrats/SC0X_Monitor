@@ -20,11 +20,12 @@ xiou             2015-05-21      V1.0.0
 
 #include "user_mb_app.h"
 #include "mbconfig.h"
-//#include "MB_DataStruct.h"
+#include "hmi_def.h"
+#include "DataStruct.h"
 #include "string.h"
 #include "math.h"
 #include "logicApp.h"
-
+#include "ScManagerExtern.h"
 
 extern uint16_t Modbus_cnt;       //Modbus接收中断计数(用于判断屏通讯是否正常)
 
@@ -111,9 +112,8 @@ USHORT HmiRegAddress;
 void Bsp_Modbus_Cycle(void)
 {
 	static uint16_t timeDelay = 0;
-	//static uint16_t timeCnt = 0;
 	static uint8_t VersionInit = 0;
-	//uint8_t	i;
+	ScData * p = GetShareDataPtr();
 	
 	//维护周期
 	if((++timeDelay) >= 65000)
@@ -134,44 +134,45 @@ void Bsp_Modbus_Cycle(void)
 	}
 #endif
 	
-	
 	//周期更新数据
 	if(timeDelay % 10 == 0)
 	{		
-//		usSRegTestBuf[0] = (timeCnt) & 0xffff;
-//		usSRegTestBuf[1] = (timeCnt++) & 0xffff;
 	//周期更新从机数据
 #if MB_SLAVE_RTU_ENABLED > 0 || MB_SLAVE_ASCII_ENABLED > 0
-		//rt_memcpy(usSRegHoldBuf, usSRegTestBuf, S_REG_HOLDING_NREGS * 2);
 			
-//		if(Modbus_cnt > 0)
-//		{
-//			Modbus_cnt = 0;	
-//			MB_LGA.MB_SYS_INFO.HmiFault = 0;
-//		}
-//		else
-//		{
-//			Modbus_cnt = 0;
-//			MB_LGA.MB_SYS_INFO.HmiFault = 1;  //通讯异常	
-//			return;
-//		}		
-//		
-//		//--------------------------------------------------------------
-//		// DSP向触摸屏输出
-//		//--------------------------------------------------------------		
-//		PDHMI(Reg)->mbStatus = HMI.mbStatus;
-//		
-//		PDHMI(Reg)->mbRdPara = HMI.mbRdPara;
-//		
-//		PDHMI(Reg)->Modue1_Para = HMI.Modue1_Para;
-//		PDHMI(Reg)->Modue2_Para = HMI.Modue2_Para;
-//		PDHMI(Reg)->Modue3_Para = HMI.Modue3_Para;
-//		PDHMI(Reg)->Modue4_Para = HMI.Modue4_Para;
-//		PDHMI(Reg)->Modue5_Para = HMI.Modue5_Para;
-//		if (VersionInit == 0)
-//		{
-//			PDHMI(Reg)->version = HMI.version;
-//		}
+		if(Modbus_cnt > 0)
+		{
+			Modbus_cnt = 0;	
+			//MB_LGA.MB_SYS_INFO.HmiFault = 0;
+		}
+		else
+		{
+			Modbus_cnt = 0;
+			//MB_LGA.MB_SYS_INFO.HmiFault = 1;  //通讯异常	
+			return;
+		}		
+		
+		//--------------------------------------------------------------
+		// DSP向触摸屏输出
+		//--------------------------------------------------------------		
+		PDHMI(Reg)->mbStatus = p->hmi.mbStatus;
+		PDHMI(Reg)->cb1Status = p->cb1Status;
+		PDHMI(Reg)->cb2Status = p->cb2Status;
+		PDHMI(Reg)->cb3Status = p->cb3Status;
+		PDHMI(Reg)->cb4Status = p->cb4Status;
+		PDHMI(Reg)->cb5Status = p->cb5Status;
+		
+		PDHMI(Reg)->mbRdPara = p->hmi.mbRdPara;
+		
+		PDHMI(Reg)->Modue1_Para = p->Cb1Para;
+		PDHMI(Reg)->Modue2_Para = p->Cb2Para;
+		PDHMI(Reg)->Modue3_Para = p->Cb3Para;
+		PDHMI(Reg)->Modue4_Para = p->Cb4Para;
+		PDHMI(Reg)->Modue5_Para = p->Cb5Para;
+		if (VersionInit == 0)
+		{
+			PDHMI(Reg)->version = p->hmi.version;
+		}
 		//--------------------------------------------------------------
 		// 触摸屏向Monitor输出
 		//--------------------------------------------------------------
@@ -180,79 +181,80 @@ void Bsp_Modbus_Cycle(void)
 	}
 }
 
-//void RegAddressGet(USHORT Address)
-//{
-//	HmiRegAddress = Address - 1;
-//	switch(HmiRegAddress){
-//			case HMI_ADDR_CHARGE_EN:
-//				HMI.HMI_WAddr_flag[ADDR_CHARGE_EN] = true;
-//				HMI.CtrCmd.ChargeEn = PDHMI(Reg)->CtrCmd.ChargeEn;
-//				break;
-//			
-//			case HMI_ADDR_CHARGE_CMD :
-//				HMI.HMI_WAddr_flag[ADDR_CHARGE_CMD] = true;
-//				HMI.CtrCmd.ChargeCmd = PDHMI(Reg)->CtrCmd.ChargeCmd;
-//				break;
-//			
-//			case HMI_ADDR_DEV_TEST :
-//				HMI.HMI_WAddr_flag[ADDR_DEV_TEST] = true;
-//				HMI.CtrCmd.DevTestCmd = PDHMI(Reg)->CtrCmd.DevTestCmd;
-//				break;
-//			
-//			case HMI_ADDR_SLEEP :
-//				HMI.HMI_WAddr_flag[ADDR_SLEEP] = true;
-//				HMI.CtrCmd.SleepCmd = PDHMI(Reg)->CtrCmd.SleepCmd;
-//				break;
-//			
-//			case HMI_ADDR_RESTART :
-//				HMI.HMI_WAddr_flag[ADDR_RESTART] = true;
-//				HMI.CtrCmd.RestartCmd = PDHMI(Reg)->CtrCmd.RestartCmd;
-//				break;
-//			
-//			case HMI_ADDR_RESTORE :
-//				HMI.HMI_WAddr_flag[ADDR_RESTORE] = true;
-//				HMI.CtrCmd.RestoreParCmd = PDHMI(Reg)->CtrCmd.RestoreParCmd;
-//				break;
-//			
-//			case HMI_ADDR_W_MB_PARA :
-//				HMI.HMI_WAddr_flag[ADDR_W_MB_PARA] = true;
-//				HMI.mbWrPara = PDHMI(Reg)->mbWrPara;
-//				break;
-//			
-//			case HMI_ADDR_W_CB1_PARA :
-//				HMI.HMI_WAddr_flag[ADDR_W_CB1_PARA] = true;
-//				HMI.Modue1_WPara = PDHMI(Reg)->Modue1_WPara;
-//				break;
-//			
-//			case HMI_ADDR_W_CB2_PARA :
-//				HMI.HMI_WAddr_flag[ADDR_W_CB2_PARA] = true;
-//				HMI.Modue2_WPara = PDHMI(Reg)->Modue2_WPara;
-//				break;
-//			
-//			case HMI_ADDR_W_CB3_PARA :
-//				HMI.HMI_WAddr_flag[ADDR_W_CB3_PARA] = true;
-//				HMI.Modue3_WPara = PDHMI(Reg)->Modue3_WPara;
-//				break;
-//			
-//			case HMI_ADDR_W_CB4_PARA :
-//				HMI.HMI_WAddr_flag[ADDR_W_CB4_PARA] = true;
-//				HMI.Modue4_WPara = PDHMI(Reg)->Modue4_WPara;
-//				break;
-//			
-//			case HMI_ADDR_W_CB5_PARA :
-//				HMI.HMI_WAddr_flag[ADDR_W_CB5_PARA] = true;
-//				HMI.Modue5_WPara = PDHMI(Reg)->Modue5_WPara;
-//				break;
-//			
-//			case HMI_ADDR_W_MB_RTC :
-//				HMI.HMI_WAddr_flag[ADDR_W_MB_RTC] = true;
-//				HMI.Time = PDHMI(Reg)->Time;
-//				break;
-//			
-//			default:
-//				break;
-//		}
-//}
+void RegAddressGet(USHORT Address)
+{
+	ScData * p = GetShareDataPtr();
+	HmiRegAddress = Address - 1;
+	switch(HmiRegAddress){
+			case HMI_ADDR_CHARGE_EN:
+				p->hmi.HMI_WAddr_flag[ADDR_CHARGE_EN] = true;
+				p->hmi.CtrCmd.ChargeEn = PDHMI(Reg)->CtrCmd.ChargeEn;
+				break;
+			
+			case HMI_ADDR_CHARGE_CMD :
+				p->hmi.HMI_WAddr_flag[ADDR_CHARGE_CMD] = true;
+				p->hmi.CtrCmd.ChargeCmd = PDHMI(Reg)->CtrCmd.ChargeCmd;
+				break;
+			
+			case HMI_ADDR_DEV_TEST :
+				p->hmi.HMI_WAddr_flag[ADDR_DEV_TEST] = true;
+				p->hmi.CtrCmd.DevTestCmd = PDHMI(Reg)->CtrCmd.DevTestCmd;
+				break;
+			
+			case HMI_ADDR_SLEEP :
+				p->hmi.HMI_WAddr_flag[ADDR_SLEEP] = true;
+				p->hmi.CtrCmd.SleepCmd = PDHMI(Reg)->CtrCmd.SleepCmd;
+				break;
+			
+			case HMI_ADDR_RESTART :
+				p->hmi.HMI_WAddr_flag[ADDR_RESTART] = true;
+				p->hmi.CtrCmd.RestartCmd = PDHMI(Reg)->CtrCmd.RestartCmd;
+				break;
+			
+			case HMI_ADDR_RESTORE :
+				p->hmi.HMI_WAddr_flag[ADDR_RESTORE] = true;
+				p->hmi.CtrCmd.RestoreParCmd = PDHMI(Reg)->CtrCmd.RestoreParCmd;
+				break;
+			
+			case HMI_ADDR_W_MB_PARA :
+				p->hmi.HMI_WAddr_flag[ADDR_W_MB_PARA] = true;
+				p->hmi.mbWrPara = PDHMI(Reg)->mbWrPara;
+				break;
+			
+			case HMI_ADDR_W_CB1_PARA :
+				p->hmi.HMI_WAddr_flag[ADDR_W_CB1_PARA] = true;
+				p->Cb1WPara = PDHMI(Reg)->Modue1_WPara;
+				break;
+			
+			case HMI_ADDR_W_CB2_PARA :
+				p->hmi.HMI_WAddr_flag[ADDR_W_CB2_PARA] = true;
+				p->Cb2WPara = PDHMI(Reg)->Modue2_WPara;
+				break;
+			
+			case HMI_ADDR_W_CB3_PARA :
+				p->hmi.HMI_WAddr_flag[ADDR_W_CB3_PARA] = true;
+				p->Cb3WPara = PDHMI(Reg)->Modue3_WPara;
+				break;
+			
+			case HMI_ADDR_W_CB4_PARA :
+				p->hmi.HMI_WAddr_flag[ADDR_W_CB4_PARA] = true;
+				p->Cb4WPara = PDHMI(Reg)->Modue4_WPara;
+				break;
+			
+			case HMI_ADDR_W_CB5_PARA :
+				p->hmi.HMI_WAddr_flag[ADDR_W_CB5_PARA] = true;
+				p->Cb5WPara = PDHMI(Reg)->Modue5_WPara;
+				break;
+			
+			case HMI_ADDR_W_MB_RTC :
+				p->hmi.HMI_WAddr_flag[ADDR_W_MB_RTC] = true;
+				p->hmi.Time = PDHMI(Reg)->Time;
+				break;
+			
+			default:
+				break;
+		}
+}
 
 //******************************输入寄存器回调函数**********************************
 //函数定义: eMBErrorCode eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
@@ -359,7 +361,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
 	
 #if MB_SLAVE_RTU_ENABLED > 0 || MB_SLAVE_ASCII_ENABLED > 0
 	//pusRegHoldingBuf = usSRegHoldBuf;
-//	pusRegHoldingBuf = (USHORT *)PDHMI(Reg);
+	pusRegHoldingBuf = (USHORT *)PDHMI(Reg);
 	//HmiRegAddress = usAddress - 1;
 	//RegAddressGet (usAddress);
 	REG_HOLDING_START = S_REG_HOLDING_START;
@@ -401,7 +403,7 @@ eMBRegHoldingCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegi
 	{
 		eStatus = MB_ENOREG;
 	}
-//	RegAddressGet (usAddress);
+	RegAddressGet (usAddress);
 	return eStatus;
 }
 //****************************线圈状态寄存器回调函数********************************

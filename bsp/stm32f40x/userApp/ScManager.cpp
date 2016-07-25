@@ -5,6 +5,7 @@
 #include "fsmc.h"
 
 ScManager sc;
+CanApp can;
 
 void ScManager::RelayRun(void)
 {
@@ -16,6 +17,8 @@ int * buffer = NULL;
 void ad_init(void)
 {
 	buffer = get_ad_data_buffer();
+	sc.SetCan(can);
+	can.scData = &sc.shareData;
 	
 	sc.input1Current.Init(&buffer[i_in1_index], 4500, 95);
 	sc.input2Current.Init(&buffer[i_in2_index], 4500, 95);
@@ -115,6 +118,11 @@ void ScManager::ContactCheck(void)
     }
 }
 
+void ScManager::SetCan(CanApp & pCan)
+{
+	this->can = pCan;
+}
+
 void data_deal(void)
 {
 	sc.RefreshAdData();
@@ -150,4 +158,10 @@ void relays_refresh(void)
 {
 	sc.RelayRun();
     //faultKeeping.Refresh();
+}
+
+void * GetShareDataPtr(void)
+{
+	ScData * p = &(sc.shareData);
+	return p;
 }
