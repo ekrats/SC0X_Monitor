@@ -42,7 +42,6 @@ public:
 	MODULE_SYS_STYP	*pcb_sys;
 
 	CbMode();
-	CbMode(MODULE_SYS_STYP *sys, Charge_Cmd_STYP *cmd, u8 Index);
 	void CB_Idle_Cal(void);
 	void CB_Standby_Cal(void);
 	void CB_Manual_Cal(void);
@@ -52,15 +51,5 @@ public:
 	void OutputManage(void);
 	void CbCtrl(void);
 };
-
-
-
-extern CbMode Moudle1Charge;
-extern CbMode Moudle2Charge;
-extern CbMode Moudle3Charge;
-extern CbMode Moudle4Charge;
-extern CbMode Moudle5Charge;
-
-void DcDcManage(void);
 
 #endif

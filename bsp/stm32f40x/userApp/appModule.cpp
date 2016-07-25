@@ -6,12 +6,6 @@
 #include "canApp.h"
 #include "appMonitor.h"
 
-CbMode Moudle1Charge(&MB_LGA.cb1_SYS, &MB_LGA.Modue1_ChargeCmd, Module1_Charge);
-CbMode Moudle2Charge(&MB_LGA.cb2_SYS, &MB_LGA.Modue2_ChargeCmd, Module2_Charge);
-CbMode Moudle3Charge(&MB_LGA.cb3_SYS, &MB_LGA.Modue3_ChargeCmd, Module3_Charge);
-CbMode Moudle4Charge(&MB_LGA.cb4_SYS, &MB_LGA.Modue4_ChargeCmd, Module4_Charge);
-CbMode Moudle5Charge(&MB_LGA.cb5_SYS, &MB_LGA.Modue5_ChargeCmd, Module5_Charge);
-
 CbMode::CbMode(MODULE_SYS_STYP *sys, Charge_Cmd_STYP *cmd, u8 Index)
 {
 	canIndex = Index;
@@ -248,11 +242,4 @@ void CbMode::CbCtrl(void)
 	OutputManage();
 }
 
-void DcDcManage(void)
-{
-	Moudle1Charge.CbCtrl();
-	Moudle2Charge.CbCtrl();
-	Moudle3Charge.CbCtrl();
-	Moudle4Charge.CbCtrl();
-	Moudle5Charge.CbCtrl();
-}
+
