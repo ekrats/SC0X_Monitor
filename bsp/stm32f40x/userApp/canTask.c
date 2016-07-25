@@ -175,7 +175,9 @@ static void Bsp_can_event_init(void)
 static void can_tx_thread_entry(void* parameter)
 {
     static uint8_t timeDelay = 0;
-
+	
+		Bsp_can_event_init();
+	
 	for(;;)
 	{
 		//------------------------------------------------------

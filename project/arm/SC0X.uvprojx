@@ -442,6 +442,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\bsp\stm32f40x\userApp\canTask.c</FilePath>
             </File>
+            <File>
+              <FileName>appModule.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\bsp\stm32f40x\userApp\appModule.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>appMonitor.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\bsp\stm32f40x\userApp\appMonitor.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
