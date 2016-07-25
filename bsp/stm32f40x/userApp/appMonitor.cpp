@@ -5,8 +5,6 @@
 #include "logicApp.h"
 #include "canApp.h"
 
-System_Mode	SysMode;
-
 System_Mode::System_Mode(void)
 {
 	this->SystemState = SYS_STATE_STOP;

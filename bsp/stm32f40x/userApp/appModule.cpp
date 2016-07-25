@@ -1,20 +1,7 @@
 #include "appModule.h"
-
 #include "stm32f4xx.h"
 #include <rtthread.h>
-#include "logicApp.h"
-#include "canApp.h"
-#include "appMonitor.h"
 
-CbMode::CbMode(MODULE_SYS_STYP *sys, Charge_Cmd_STYP *cmd, u8 Index)
-{
-	canIndex = Index;
-	pcb_sys = sys;
-	pcb_cmd = cmd;
-	
-	State = CB_STATE_IDLE;
-	OutputMode = CB_OUT_IDLE;
-}
 
 void CbMode::ModuleManage(void)
 {
@@ -22,17 +9,17 @@ void CbMode::ModuleManage(void)
 	{
 		//待机态
 		case CB_STATE_IDLE:
-			if (pcb_sys->input.Fault == true)
+			if (isAbnormal == true)
 			{
 				State = CB_STATE_FAULT;
 				OutputMode = CB_OUT_FAULT;
 			}
-			else if (pcb_sys->input.Charge_Mode_Set == CHARGE_MODE_AUTO)
+			else if (modeSet == CHARGE_MODE_AUTO)
 			{
 				State = CB_STATE_AUTO;
 				OutputMode = CB_OUT_AUTO;
 			}
-			else if (pcb_sys->input.Charge_Mode_Set == CHARGE_MODE_MANUAL)
+			else if (modeSet == CHARGE_MODE_MANUAL)
 			{
 				State = CB_STATE_MANUAL;
 				OutputMode = CB_OUT_MANUAL;
@@ -45,7 +32,7 @@ void CbMode::ModuleManage(void)
 			break;
 		//手动充电
 		case CB_STATE_MANUAL:
-			if (MB_LGA.cb1_SYS.input.Fault == true)
+			if (isAbnormal == true)
 			{
 				State = CB_STATE_FAULT;
 				OutputMode = CB_OUT_FAULT;
@@ -55,12 +42,12 @@ void CbMode::ModuleManage(void)
 				State = CB_STATE_IDLE;
 				OutputMode = CB_OUT_IDLE;
 			}
-			else if (pcb_sys->input.Charge_Mode_Set == CHARGE_MODE_AUTO)
+			else if (modeSet == CHARGE_MODE_AUTO)
 			{
 				State = CB_STATE_AUTO;
 				OutputMode = CB_OUT_AUTO;
 			}
-			else if (pcb_sys->input.Charge_Mode_Set == CHARGE_MODE_STANDBY)
+			else if (modeSet == CHARGE_MODE_STANDBY)
 			{
 				State = CB_STATE_MANUAL;
 				OutputMode = CB_OUT_STANDY;
@@ -73,7 +60,7 @@ void CbMode::ModuleManage(void)
 			break;
 		//自动充电
 		case CB_STATE_AUTO:
-			if (MB_LGA.cb1_SYS.input.Fault == true)
+			if (isAbnormal == true)
 			{
 				State = CB_STATE_FAULT;
 				OutputMode = CB_OUT_FAULT;
@@ -83,7 +70,7 @@ void CbMode::ModuleManage(void)
 				State = CB_STATE_IDLE;
 				OutputMode = CB_OUT_IDLE;
 			}
-			else if (pcb_sys->input.Charge_Mode_Set == CHARGE_MODE_MANUAL)
+			else if (modeSet == CHARGE_MODE_MANUAL)
 			{
 				State = CB_STATE_MANUAL;
 				OutputMode = CB_OUT_MANUAL;
@@ -96,7 +83,7 @@ void CbMode::ModuleManage(void)
 			break;
 		//故障态
 		case CB_STATE_FAULT:
-			if (MB_LGA.cb1_SYS.input.Fault == false)
+			if (isAbnormal == false)
 			{
 				State = CB_STATE_IDLE;
 				OutputMode = CB_OUT_IDLE;
@@ -112,99 +99,99 @@ void CbMode::ModuleManage(void)
 				OutputMode = CB_OUT_IDLE;
 			break;
 	}
-	pcb_sys->output.Charge_Mode_Now = State;
+	modeNow = State;
 }
 
 void CbMode::CB_Idle_Cal(void)
 {
-	if (pcb_sys->input.Charging == true)
+	if (Charging == true)
 	{
-		pcb_cmd->CMD = 0;
-		can.SendCan(canIndex);
+		chargeCmd = 0;
+		//can.SendCan(canIndex);
 	}
-	startDelay = CHARGE_START_T;
-	floatDelay = CHARGE_FLOAT_T;
+	//startDelay = CHARGE_START_T;
+	//floatDelay = CHARGE_FLOAT_T;
 }
 
 void CbMode::CB_Manual_Cal(void)
 {
-	if (pcb_sys->input.Charging != true)
+	if (Charging != true)
 	{
-		pcb_cmd->CMD = 1;
-		can.SendCan(canIndex);
+		chargeCmd = 1;
+		//can.SendCan(canIndex);
 		return ;
 	}
-	pcb_cmd->CMD = 1;
-	startDelay = CHARGE_START_T;
-	floatDelay = CHARGE_FLOAT_T;
+	chargeCmd = 1;
+	//startDelay = CHARGE_START_T;
+	//floatDelay = CHARGE_FLOAT_T;
 }
 
 void CbMode::CB_Standby_Cal(void)
 {
-	if (pcb_sys->input.Charging == true)
+	if (Charging == true)
 	{
-		pcb_cmd->CMD = 0;
-		can.SendCan(canIndex);
+		chargeCmd = 0;
+		//can.SendCan(canIndex);
 	}
-	pcb_cmd->CMD = 0;
-	startDelay = CHARGE_START_T;
-	floatDelay = CHARGE_FLOAT_T;
+	chargeCmd = 0;
+	//startDelay = CHARGE_START_T;
+	//floatDelay = CHARGE_FLOAT_T;
 }
 
 void CbMode::CB_Auto_Cal(void)
 {
-	if (pcb_sys->input.Instation)
+	if (Instation)
 	{
-		if (!pcb_sys->input.Charging
-		 && !pcb_sys->output.chargeComplet)
+		if (!Charging
+		 && !chargeComplet)
 		{
 			//delay
-			if (startDelay > 0)
-			{
-				startDelay--;
-			}
-			else
-			{
-				pcb_cmd->CMD = 1;
-				can.SendCan(canIndex);
-			}
+//			if (startDelay > 0)
+//			{
+//				startDelay--;
+//			}
+//			else
+//			{
+//				chargeCmd = 1;
+//				//can.SendCan(canIndex);
+//			}
 		}
-		else if (pcb_sys->input.floatChargeN)
+		else if (floatCharge)
 		{
 			//delay
-			if (floatDelay > 0)
-			{
-				floatDelay--;
-			}
-			else
-			{
-				pcb_cmd->CMD = 0;
-				can.SendCan(canIndex);
-			}
+//			if (floatDelay > 0)
+//			{
+//				floatDelay--;
+//			}
+//			else
+//			{
+//				chargeCmd = 0;
+//				can.SendCan(canIndex);
+//			}
 		}
 	}
 	else
 	{
-		if (pcb_sys->input.Charging == true)
+		if (Charging == true)
 		{
-			pcb_cmd->CMD = 0;
-			can.SendCan(canIndex);
+			chargeCmd = 0;
+			//can.SendCan(canIndex);
 		}
-		pcb_cmd->CMD = 0;
-		startDelay = CHARGE_START_T;
-		floatDelay = CHARGE_FLOAT_T;
+		chargeCmd = 0;
+//		startDelay = CHARGE_START_T;
+//		floatDelay = CHARGE_FLOAT_T;
 	}
 }
 
 void CbMode::CB_Fault_Cal(void)
 {
-	if (pcb_sys->input.Charging == true)
+	if (Charging == true)
 	{
-		pcb_cmd->CMD = 0;
-		can.SendCan(canIndex);
+		chargeCmd = 0;
+		//can.SendCan(canIndex);
 	}
-	startDelay = CHARGE_START_T;
-	floatDelay = CHARGE_FLOAT_T;
+//	startDelay = CHARGE_START_T;
+//	floatDelay = CHARGE_FLOAT_T;
 }
 
 void CbMode::OutputManage(void)

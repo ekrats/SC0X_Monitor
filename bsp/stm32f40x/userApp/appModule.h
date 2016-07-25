@@ -31,17 +31,55 @@ enum{
 
 class CbMode
 {
-private:
-	u8 canIndex;
-	u16 State;
-	u16 OutputMode;
-	u16	startDelay;
-	u16 floatDelay;
 public:
-	Charge_Cmd_STYP *pcb_cmd;
-	MODULE_SYS_STYP	*pcb_sys;
+		inline void ChargeModeSet(int mode)
+		{
+				modeSet = mode;
+		}
+	
+private:
+		int 	chargeCmd;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		bool 	isAbnormal;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		int  	modeSet;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		int 	modeNow;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		bool 	Instation;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		bool 	Charging;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		bool	floatCharge;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		bool	pwmOnFail;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		bool	pwmOffFail;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		bool	chargeComplet;
+		// ÕªÒª: 
+    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
+		int canIndex;
+		int State;
+		int OutputMode;
+public:
 
-	CbMode();
+	CbMode(void);
+	void Init(int index, int state, int outputMode)
+	{
+			this->canIndex = index;
+			this->State = state;
+			this->OutputMode = outputMode;
+	}
 	void CB_Idle_Cal(void);
 	void CB_Standby_Cal(void);
 	void CB_Manual_Cal(void);

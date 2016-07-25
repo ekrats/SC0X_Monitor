@@ -32,15 +32,16 @@ enum{
 class System_Mode
 {
 private:
-	uint16_t 	PreDelayCnt;
-	uint16_t 	PreDelay2Cnt;
+		//预充电接触器闭合
+		bool	PreChargeStep1;
+		//预充电时间之后
+		bool  PreChargeStep2;
+		//预充电完成
+		bool	PreFinsh;
+		
+		int SystemState;
+		int SystemOutput;
 public:
-	u16	SystemState;
-	u16 SystemOutput;
-	uint8_t		PreChargeStep1		: 1 ; //预充电接触器闭合
-	uint8_t		PreChargeStep2		: 1 ; //预充电时间之后
-	uint8_t		PreFinsh			: 1 ; //预充电完成状态位
-
 	System_Mode(void);
 	void StopCal(void);
 	void PreChargeCal(void);
@@ -51,7 +52,5 @@ public:
 	void System_Output(void);
 	void ChargeModeManage(void);
 };
-
-extern System_Mode	SysMode;
 
 #endif
