@@ -4,8 +4,10 @@
 #include "ad.h"
 #include "fsmc.h"
 
+
 ScManager sc;
 CanApp can;
+System_Mode SysMode;
 
 void ScManager::RelayRun(void)
 {
@@ -130,6 +132,11 @@ void data_deal(void)
 	sc.RefreshConData();
 	sc.RefreshPt100Data();
 	sc.ContactCheck();
+}
+
+void io_output(void)
+{
+	io_write_output(sc.shareData.output.io.out);
 }
 
 void UpdateData(void)

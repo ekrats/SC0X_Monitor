@@ -29,6 +29,13 @@ enum{
 	CB_FAULT,
 };
 
+enum{
+	CHARGE_NONE,
+	CHARGE_MODE_AUTO,
+	CHARGE_MODE_MANUAL,
+	CHARGE_MODE_STANDBY,
+};
+
 class CbMode
 {
 public:
@@ -38,16 +45,18 @@ public:
 		}
 	
 private:
-		int 	chargeCmd;
-		// 摘要: 
-    //     模块是否故障?
-		bool 	isAbnormal;
-		// 摘要: 
+	// 摘要: 
     //     模块是否故障?
 		int  	modeSet;
 		// 摘要: 
     //     模块是否故障?
 		int 	modeNow;
+
+		int 	chargeCmd;
+		// 摘要: 
+    //     模块是否故障?
+		bool 	isAbnormal;
+		bool	condition;
 		// 摘要: 
     //     模块是否故障?
 		bool 	Instation;

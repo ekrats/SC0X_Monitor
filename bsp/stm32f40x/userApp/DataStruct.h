@@ -37,7 +37,7 @@ enum _io_output_index_{
 };
 
 typedef union _io_output_{
-	int out[9];
+	int out[16];
 	struct{
 		int outCon1;
 		int outCon2;
@@ -48,6 +48,7 @@ typedef union _io_output_{
 		int preCon;
 		int mainCon1;
 		int mainCon2;
+		int res[7];
 	}out_32;
 }io_output_type;
 

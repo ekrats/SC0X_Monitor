@@ -22,6 +22,12 @@
 #define SYS_OUT_TEST				0x5000
 #define SYS_OUT_SLEEP 				0x6000
 
+enum {
+	CHARGE,
+	DEVICE_TEST,
+	SLEEP,
+};
+
 enum{
 	CHARGE_NONE,
 	CHARGE_MODE_AUTO,
@@ -31,16 +37,25 @@ enum{
 
 class System_Mode
 {
+public:
+		inline void ChargeModeSet(int mode)
+		{
+				SysModeSet = mode;
+		}
 private:
+		int 	SystemState;
+		int 	SystemOutput;
+		int 	SysModeSet;
+		int 	*cabinet;
+		bool	inSleep;
+		bool	isAbnormal;
 		//预充电接触器闭合
 		bool	PreChargeStep1;
 		//预充电时间之后
-		bool  PreChargeStep2;
+		bool  	PreChargeStep2;
 		//预充电完成
 		bool	PreFinsh;
 		
-		int SystemState;
-		int SystemOutput;
 public:
 	System_Mode(void);
 	void StopCal(void);

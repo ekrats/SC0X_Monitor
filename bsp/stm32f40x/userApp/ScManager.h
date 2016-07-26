@@ -3,6 +3,7 @@
 #include "RelayModule.h"
 #include "DataStruct.h"
 #include "canApp.h"
+#include "appMonitor.h"
 
 class ScManager : public Sc
 {
@@ -25,6 +26,8 @@ public:
 		
 private:
 	CanApp can;
+	System_Mode *sysMode;
+
 	List<Failure*> warnList;
     List<Failure*> failureList;
     RelayModule relays;

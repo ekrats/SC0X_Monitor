@@ -43,6 +43,7 @@ static void rt_thread_entry_ad(void* parameter)
         adc_update();
 		io_update();
         data_deal();
+		io_output();
         pcmaster_record();
     }
 }

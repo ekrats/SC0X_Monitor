@@ -14,6 +14,11 @@ void CbMode::ModuleManage(void)
 				State = CB_STATE_FAULT;
 				OutputMode = CB_OUT_FAULT;
 			}
+			else if (condition == false)
+			{
+				State = CB_STATE_IDLE;
+				OutputMode = CB_OUT_IDLE;
+			}
 			else if (modeSet == CHARGE_MODE_AUTO)
 			{
 				State = CB_STATE_AUTO;
@@ -37,7 +42,7 @@ void CbMode::ModuleManage(void)
 				State = CB_STATE_FAULT;
 				OutputMode = CB_OUT_FAULT;
 			}
-			else if (SysMode.SystemState != SYS_STATE_STANDBY)
+			else if (condition == false)
 			{
 				State = CB_STATE_IDLE;
 				OutputMode = CB_OUT_IDLE;
@@ -65,7 +70,7 @@ void CbMode::ModuleManage(void)
 				State = CB_STATE_FAULT;
 				OutputMode = CB_OUT_FAULT;
 			}
-			else if (SysMode.SystemState != SYS_STATE_STANDBY)
+			else if (condition == false)
 			{
 				State = CB_STATE_IDLE;
 				OutputMode = CB_OUT_IDLE;

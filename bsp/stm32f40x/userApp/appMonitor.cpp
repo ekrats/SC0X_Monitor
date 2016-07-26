@@ -17,25 +17,25 @@ void System_Mode::ChargeModeManage(void)
 	{
 		case SYS_STATE_STOP :
 			//ÐÝÃß
-			if (MB_LGA.MB_SYS_INFO.SysModeSet == SLEEP)
+			if (SysModeSet == SLEEP)
 			{
 				this->SystemState = SYS_STATE_SLEEP;
 				this->SystemOutput = SYS_OUT_SLEEP;
 			}
 			//Æ÷¼þ²âÊÔ
-			else if (MB_LGA.MB_SYS_INFO.SysModeSet == DEVICE_TEST)
+			else if (SysModeSet == DEVICE_TEST)
 			{
 				this->SystemState = SYS_STATE_TEST;
 				this->SystemOutput = SYS_OUT_TEST;
 			}
 			//ÑÏÖØ¹ÊÕÏ
-			else if (MB_LGA.MB_SYS_INFO.sFault == true)
+			else if (isAbnormal == true)
 			{
 				this->SystemState = SYS_STATE_FAULT;
 				this->SystemOutput = SYS_OUT_FAULT;
 			}
 			//ÆðÍ£°´Å¥ °´ÏÂ
-			else if (MB_LGA.MB_IO_IN.cabinetEnN == true)
+			else if (*cabinet == true)
 			{
 				this->SystemState = SYS_STATE_PRECHARGE;
 				this->SystemOutput = SYS_OUT_PRECHARGE;
@@ -49,25 +49,25 @@ void System_Mode::ChargeModeManage(void)
 			
 		case SYS_STATE_PRECHARGE :
 			//ÐÝÃß
-			if (MB_LGA.MB_SYS_INFO.SysModeSet == SLEEP)
+			if (SysModeSet == SLEEP)
 			{
 				this->SystemState = SYS_STATE_SLEEP;
 				this->SystemOutput = SYS_OUT_SLEEP;
 			}
 			//Æ÷¼þ²âÊÔ
-			else if (MB_LGA.MB_SYS_INFO.SysModeSet == DEVICE_TEST)
+			else if (SysModeSet == DEVICE_TEST)
 			{
 				this->SystemState = SYS_STATE_TEST;
 				this->SystemOutput = SYS_OUT_TEST;
 			}
 			//ÑÏÖØ¹ÊÕÏ
-			else if (MB_LGA.MB_SYS_INFO.sFault == true)
+			else if (isAbnormal == true)
 			{
 				this->SystemState = SYS_STATE_FAULT;
 				this->SystemOutput = SYS_OUT_FAULT;
 			}
 			//ÆðÍ£°´Å¥ °´ÏÂ
-			else if (MB_LGA.MB_IO_IN.cabinetEnN == false)
+			else if (*cabinet == false)
 			{
 				this->PreChargeStep1 = false;
 				this->PreChargeStep2 = false;
@@ -90,25 +90,25 @@ void System_Mode::ChargeModeManage(void)
 			//´ý»úÌ¬
 		case SYS_STATE_STANDBY :
 			//ÐÝÃß
-			if (MB_LGA.MB_SYS_INFO.SysModeSet == SLEEP)
+			if (SysModeSet == SLEEP)
 			{
 				this->SystemState = SYS_STATE_SLEEP;
 				this->SystemOutput = SYS_OUT_SLEEP;
 			}
 			//Æ÷¼þ²âÊÔ
-			else if (MB_LGA.MB_SYS_INFO.SysModeSet == DEVICE_TEST)
+			else if (SysModeSet == DEVICE_TEST)
 			{
 				this->SystemState = SYS_STATE_TEST;
 				this->SystemOutput = SYS_OUT_TEST;
 			}
 			//ÑÏÖØ¹ÊÕÏ
-			else if (MB_LGA.MB_SYS_INFO.sFault == true)
+			else if (isAbnormal == true)
 			{
 				this->SystemState = SYS_STATE_FAULT;
 				this->SystemOutput = SYS_OUT_FAULT;
 			}
 			//ÆðÍ£°´Å¥ °´ÏÂ
-			else if (MB_LGA.MB_IO_IN.cabinetEnN == false)
+			else if (*cabinet == false)
 			{
 				this->PreChargeStep1 = false;
 				this->PreChargeStep2 = false;
@@ -124,19 +124,19 @@ void System_Mode::ChargeModeManage(void)
 			//¹ÊÕÏÌ¬
 		case SYS_STATE_FAULT :
 			//ÐÝÃß
-			if (MB_LGA.MB_SYS_INFO.SysModeSet == SLEEP)
+			if (SysModeSet == SLEEP)
 			{
 				this->SystemState = SYS_STATE_SLEEP;
 				this->SystemOutput = SYS_OUT_SLEEP;
 			}
 			//Æ÷¼þ²âÊÔ
-			else if (MB_LGA.MB_SYS_INFO.SysModeSet == DEVICE_TEST)
+			else if (SysModeSet == DEVICE_TEST)
 			{
 				this->SystemState = SYS_STATE_TEST;
 				this->SystemOutput = SYS_OUT_TEST;
 			}
 			//¹ÊÕÏÏûÊ§
-			else if (MB_LGA.MB_SYS_INFO.sFault == false)
+			else if (isAbnormal == false)
 			{
 				this->SystemState = SYS_STATE_STOP;
 				this->SystemOutput = SYS_OUT_STOP;
@@ -150,12 +150,12 @@ void System_Mode::ChargeModeManage(void)
 			//Æ÷¼þ²âÊÔ
 		case SYS_STATE_TEST:
 			//ÐÝÃß
-			if (MB_LGA.MB_SYS_INFO.SysModeSet == SLEEP)
+			if (SysModeSet == SLEEP)
 			{
 				this->SystemState = SYS_STATE_SLEEP;
 			}
 			//ÍË³öÆ÷¼þ²âÊÔ
-			else if (MB_LGA.MB_SYS_INFO.SysModeSet == CHARGE)
+			else if (SysModeSet == CHARGE)
 			{
 				this->SystemState = SYS_STATE_STOP;
 				this->SystemOutput = SYS_OUT_STOP;
@@ -169,13 +169,13 @@ void System_Mode::ChargeModeManage(void)
 			//ÐÝÃßÌ¬
 		case SYS_STATE_SLEEP:
 			//½øÈëÐÝÃß
-			if (MB_LGA.CtrCmd.SleepCmd == IN_SLEEP)
+			if (inSleep == true)
 			{
 				this->SystemState = SYS_STATE_SLEEP;
 				this->SystemOutput = SYS_OUT_SLEEP;
 			}
 			//ÍË³öÐÝÃß
-			else if (MB_LGA.CtrCmd.SleepCmd == OUT_SLEEP)
+			else if (inSleep == false)
 			{
 				this->SystemState = SYS_STATE_STOP;
 				this->SystemOutput = SYS_OUT_STOP;
@@ -194,7 +194,7 @@ void System_Mode::ChargeModeManage(void)
 			
 	}
 }
-
+/*
 void System_Mode::StopCal(void)
 {
 	if (MB_LGA.cb1_SYS.input.Charging == false && MB_LGA.cb2_SYS.input.Charging == false
@@ -398,3 +398,4 @@ void System_Mode::System_Output(void)
 			break;
 	}
 }
+*/

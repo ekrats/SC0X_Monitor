@@ -9,6 +9,7 @@ extern "C" {
 	
 void ad_init(void);
 void io_init(void);
+void io_output(void);
 void relays_refresh(void);
 void data_deal(void);
 void slow_check(void);

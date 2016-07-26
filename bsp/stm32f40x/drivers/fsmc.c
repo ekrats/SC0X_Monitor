@@ -212,10 +212,24 @@ int System_fsmc_init(void)
 
 	return 1;
 }
-
+static int * sysOutputF;
 void io_write_output(void* buffer)
 {
-	memcpy((void*)FGPA_OUTPUT_ADDR,(void*)buffer,2);
+	uint8_t scanChl;
+	uint16_t outputBuff = 0;
+	sysOutputF = (int*)buffer;
+	for(scanChl = 0; scanChl < OUTPUT_CHANEL_MAX; scanChl++)
+	{
+		if (sysOutputF[scanChl] == 1)
+		{
+			outputBuff |= 0x0001 << scanChl;
+		}
+		else
+		{
+			outputBuff &= ~(0x0001 << scanChl);
+		}
+	}
+	memcpy((void*)FGPA_OUTPUT_ADDR,(void*)&outputBuff,2);
 }
 
 void io_read_input(void* buffer)
