@@ -28,13 +28,6 @@ enum {
 	SLEEP,
 };
 
-enum{
-	CHARGE_NONE,
-	CHARGE_MODE_AUTO,
-	CHARGE_MODE_MANUAL,
-	CHARGE_MODE_STANDBY,
-};
-
 class System_Mode
 {
 public:

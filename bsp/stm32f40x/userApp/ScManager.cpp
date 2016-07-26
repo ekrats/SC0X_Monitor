@@ -125,6 +125,11 @@ void ScManager::SetCan(CanApp & pCan)
 	this->can = pCan;
 }
 
+void ScManager::SetSysMode(System_Mode * mode)
+{
+		this->sysMode = mode;
+}
+
 void data_deal(void)
 {
 	sc.RefreshAdData();

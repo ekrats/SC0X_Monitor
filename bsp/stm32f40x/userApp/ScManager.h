@@ -4,12 +4,13 @@
 #include "DataStruct.h"
 #include "canApp.h"
 #include "appMonitor.h"
+#include "appModule.h"
 
 class ScManager : public Sc
 {
 public:
-    ScManager() { ; } 
-    ~ScManager(){}
+	ScManager() { ; } 
+	~ScManager(){}
 	
 	void RelayRun(void);
 	void RefreshAdData(void);
@@ -20,6 +21,7 @@ public:
 	void ContactRelayRun(void);
 	
 	void SetCan(CanApp & pCan);
+	void SetSysMode(System_Mode * mode);
 	void SlowCheck(void);
 	void MonitorCheckSlow(void);
 	void FaultCheckModuleInit(void);
@@ -27,11 +29,16 @@ public:
 private:
 	CanApp can;
 	System_Mode *sysMode;
+	CbMode *cb1Mode;
+	CbMode *cb2Mode;
+	CbMode *cb3Mode;
+	CbMode *cb4Mode;
+	CbMode *cb5Mode;
 
 	List<Failure*> warnList;
-    List<Failure*> failureList;
-    RelayModule relays;
-    Relay systemResetRelay;
+	List<Failure*> failureList;
+	RelayModule relays;
+	Relay systemResetRelay;
 
 	void UpdateFaultState(void);
 	void UpdateWarnState(void);

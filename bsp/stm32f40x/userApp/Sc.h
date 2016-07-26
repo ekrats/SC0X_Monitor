@@ -16,7 +16,7 @@ public:
     {
     }
 protected:
-    List<ITransducer*> sensorList;
+	List<ITransducer*> sensorList;
 	List<ITransducer*> ioList;
 	List<Contactor*> ContactList;
 	List<PT100*> pt100List;
