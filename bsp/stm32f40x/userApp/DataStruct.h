@@ -6,7 +6,7 @@
 #include "can_app_def.h"
 
 enum _io_input_index_{
-	cabinetEnN,
+	cabinetN,
 	inFuse1N,
 	inFuse2N,
 	outFuse1N,
@@ -14,10 +14,10 @@ enum _io_input_index_{
 	outFuse3N,
 	outFuse4N,
 	outFuse5N,
-	preConN,
+	preConN = 13,
 	mainCon1N,
 	mainCon2N,
-	outCon1N,
+	outCon1N = 18,
 	outCon2N,
 	outCon3N,
 	outCon4N,
@@ -55,7 +55,7 @@ typedef union _io_output_{
 typedef union _io_input_{
 	int in[16];
 	struct{
-		int cabinetEn;
+		int cabinet;
 		int inFuse1;
 		int inFuse2;
 		int outFuse1;
@@ -181,6 +181,7 @@ typedef struct{
 typedef struct{
 	DataInput 	input;
 	DataOutput	output;
+	MB_LGA_INFO		sysInfo;
 	CAN_CB_Status_STYP cb1Status;
 	CAN_CB_Status_STYP cb2Status;
 	CAN_CB_Status_STYP cb3Status;

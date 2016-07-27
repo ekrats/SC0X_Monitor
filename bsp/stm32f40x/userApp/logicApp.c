@@ -18,6 +18,7 @@ static void rt_thread_entry_logic(void* parameter)
     {
         relays_refresh();
 		slow_check();
+		state_control();
 		rt_thread_delay(10);
     }
 }
@@ -30,8 +31,7 @@ static void rt_thread_entry_ad(void* parameter)
     rt_sem_init(&sem_ad_task, "ad", 1, 1);
 	System_hw_ADC_Init();
     rt_thread_delay(1000);
-    ad_init();
-	io_init();
+	sc_init();
     
     while(1)
     {

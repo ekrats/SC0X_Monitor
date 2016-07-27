@@ -192,6 +192,31 @@ typedef struct _CAN_AN_VAL_       //数据来源于AD板
 
 }DS_CAN_AN_VAL,*PDS_CAN_AN_VAL;
 
+//------------------------------------------------------
+// 系统信息
+//------------------------------------------------------
+typedef struct _MB_SYS_INFO_
+{
+	uint16_t 	SystemState;
+	uint16_t	OutputMode;
+	uint16_t    SysModeSet;
+	
+	uint8_t		wFault				: 1 ; //警告故障
+	uint8_t		sFault				: 1 ; //严重故障
+	uint8_t		busConnect			: 1 ;
+	uint8_t		busVoltOK			: 1 ; //母线电压OK
+	uint8_t		PreFinsh			: 1 ; //预充电完成状态位
+	uint8_t		Charging			: 1 ;
+	uint8_t		CanFault			: 1 ; //CAN掉线
+	uint8_t		HmiFault			: 1 ; //显示屏通信标志位 0：通讯正常 1：异常
+	uint8_t		AdFault				: 1 ; //AD板通信标志位 0：通讯正常 1：异常
+	uint8_t		wParFlag			: 1 ;
+	uint8_t		rParFlag			: 1 ;
+	uint8_t		wFaultFlg			: 1 ;
+	uint8_t		rFaultFlg			: 1 ;
+	
+}MB_LGA_INFO;
+
 typedef struct _mb_statu_
 {
 /* 0x000 */	uint16_t		sys_mode;

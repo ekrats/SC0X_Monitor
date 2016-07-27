@@ -5,6 +5,7 @@
 #include <rtthread.h>
 #include "MB_DataStruct.h"
 #include "logicApp.h"
+#include "StateMachine.h"
 
 #define CB_STATE_IDLE				0x0000
 #define CB_STATE_MANUAL				0x0010
@@ -36,26 +37,13 @@ enum{
 	CHARGE_MODE_STANDBY,
 };
 
-class CbMode
+class CbMode :public StateMachine
 {
-public:
-		inline void ChargeModeSet(int mode)
-		{
-				modeSet = mode;
-		}
-	
 private:
-	// ÕªÒª: 
-    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
-		int  	modeSet;
 		// ÕªÒª: 
     //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
-		int 	modeNow;
-
 		int 	chargeCmd;
-		// ÕªÒª: 
-    //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
-		bool 	isAbnormal;
+
 		bool	condition;
 		// ÕªÒª: 
     //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
@@ -78,16 +66,16 @@ private:
 		// ÕªÒª: 
     //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
 		int canIndex;
-		int State;
-		int OutputMode;
 public:
 
-	CbMode(void);
-	void Init(int index, int state, int outputMode)
+	CbMode(void)
+	{ ; }
+	void Run(void);
+	void Init(int index, int mode, int outputMode)
 	{
-			this->canIndex = index;
-			this->State = state;
-			this->OutputMode = outputMode;
+		this->canIndex = index;
+		this->modeSet = mode;
+		this->outputMode = outputMode;
 	}
 	void CB_Idle_Cal(void);
 	void CB_Standby_Cal(void);
@@ -96,7 +84,7 @@ public:
 	void CB_Fault_Cal(void);
 	void ModuleManage(void);
 	void OutputManage(void);
-	void CbCtrl(void);
+
 };
 
 #endif

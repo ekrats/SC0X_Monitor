@@ -423,6 +423,16 @@
               <FilePath>..\..\bsp\stm32f40x\userApp\ScManager.cpp</FilePath>
             </File>
             <File>
+              <FileName>appMonitor.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\bsp\stm32f40x\userApp\appMonitor.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>appModule.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\bsp\stm32f40x\userApp\appModule.cpp</FilePath>
+            </File>
+            <File>
               <FileName>ScCheck.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\bsp\stm32f40x\userApp\ScCheck.cpp</FilePath>
@@ -443,14 +453,9 @@
               <FilePath>..\..\bsp\stm32f40x\userApp\canTask.c</FilePath>
             </File>
             <File>
-              <FileName>appModule.cpp</FileName>
+              <FileName>ScData.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\bsp\stm32f40x\userApp\appModule.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>appMonitor.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\bsp\stm32f40x\userApp\appMonitor.cpp</FilePath>
+              <FilePath>..\..\bsp\stm32f40x\userApp\ScData.cpp</FilePath>
             </File>
           </Files>
         </Group>

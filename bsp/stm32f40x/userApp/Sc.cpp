@@ -15,6 +15,7 @@ Sc::Sc(void)
 	pt100List.Add(&cap1Temp);
 	pt100List.Add(&cap2Temp);
 	
+	ioList.Add(&cabinet);
 	ioList.Add(&inFuse1);
 	ioList.Add(&inFuse2);
 	ioList.Add(&outFuse1);

@@ -7,163 +7,163 @@
 
 System_Mode::System_Mode(void)
 {
-	this->SystemState = SYS_STATE_STOP;
-	this->SystemOutput = SYS_OUT_STOP;
+	state = SYS_STATE_STOP;
+	outputMode = SYS_OUT_STOP;
 }
 
 void System_Mode::ChargeModeManage(void)
 {
-	switch (this->SystemState)
+	switch (state)
 	{
 		case SYS_STATE_STOP :
 			//ÐÝÃß
-			if (SysModeSet == SLEEP)
+			if (modeSet == SLEEP)
 			{
-				this->SystemState = SYS_STATE_SLEEP;
-				this->SystemOutput = SYS_OUT_SLEEP;
+				state = SYS_STATE_SLEEP;
+				outputMode = SYS_OUT_SLEEP;
 			}
 			//Æ÷¼þ²âÊÔ
-			else if (SysModeSet == DEVICE_TEST)
+			else if (modeSet == DEVICE_TEST)
 			{
-				this->SystemState = SYS_STATE_TEST;
-				this->SystemOutput = SYS_OUT_TEST;
+				state = SYS_STATE_TEST;
+				outputMode = SYS_OUT_TEST;
 			}
 			//ÑÏÖØ¹ÊÕÏ
-			else if (isAbnormal == true)
+			else if (Abnormal == true)
 			{
-				this->SystemState = SYS_STATE_FAULT;
-				this->SystemOutput = SYS_OUT_FAULT;
+				state = SYS_STATE_FAULT;
+				outputMode = SYS_OUT_FAULT;
 			}
 			//ÆðÍ£°´Å¥ °´ÏÂ
 			else if (*cabinet == true)
 			{
-				this->SystemState = SYS_STATE_PRECHARGE;
-				this->SystemOutput = SYS_OUT_PRECHARGE;
+				state = SYS_STATE_PRECHARGE;
+				outputMode = SYS_OUT_PRECHARGE;
 			}
 			else
 			{
-				this->SystemState = SYS_STATE_STOP;
-				this->SystemOutput = SYS_OUT_STOP;
+				state = SYS_STATE_STOP;
+				outputMode = SYS_OUT_STOP;
 			}
 			break;
 			
 		case SYS_STATE_PRECHARGE :
 			//ÐÝÃß
-			if (SysModeSet == SLEEP)
+			if (modeSet == SLEEP)
 			{
-				this->SystemState = SYS_STATE_SLEEP;
-				this->SystemOutput = SYS_OUT_SLEEP;
+				state = SYS_STATE_SLEEP;
+				outputMode = SYS_OUT_SLEEP;
 			}
 			//Æ÷¼þ²âÊÔ
-			else if (SysModeSet == DEVICE_TEST)
+			else if (modeSet == DEVICE_TEST)
 			{
-				this->SystemState = SYS_STATE_TEST;
-				this->SystemOutput = SYS_OUT_TEST;
+				state = SYS_STATE_TEST;
+				outputMode = SYS_OUT_TEST;
 			}
 			//ÑÏÖØ¹ÊÕÏ
-			else if (isAbnormal == true)
+			else if (Abnormal == true)
 			{
-				this->SystemState = SYS_STATE_FAULT;
-				this->SystemOutput = SYS_OUT_FAULT;
+				state = SYS_STATE_FAULT;
+				outputMode = SYS_OUT_FAULT;
 			}
 			//ÆðÍ£°´Å¥ °´ÏÂ
 			else if (*cabinet == false)
 			{
-				this->PreChargeStep1 = false;
-				this->PreChargeStep2 = false;
-				this->SystemState = SYS_STATE_STOP;
-				this->SystemOutput = SYS_OUT_STOP;
+				PreChargeStep1 = false;
+				PreChargeStep2 = false;
+				state = SYS_STATE_STOP;
+				outputMode = SYS_OUT_STOP;
 			}
 			//Ô¤³äµçÍê³É
 			else if (this->PreFinsh)
 			{
-				this->SystemState = SYS_STATE_STANDBY;
-				this->SystemOutput = SYS_OUT_STANDBY;
+				state = SYS_STATE_STANDBY;
+				outputMode = SYS_OUT_STANDBY;
 			}
 			//Ô¤³äµçing
 			else
 			{
-				this->SystemState = SYS_STATE_PRECHARGE;
-				this->SystemOutput = SYS_OUT_PRECHARGE;
+				state = SYS_STATE_PRECHARGE;
+				outputMode = SYS_OUT_PRECHARGE;
 			}
 			break;
 			//´ý»úÌ¬
 		case SYS_STATE_STANDBY :
 			//ÐÝÃß
-			if (SysModeSet == SLEEP)
+			if (modeSet == SLEEP)
 			{
-				this->SystemState = SYS_STATE_SLEEP;
-				this->SystemOutput = SYS_OUT_SLEEP;
+				state = SYS_STATE_SLEEP;
+				outputMode = SYS_OUT_SLEEP;
 			}
 			//Æ÷¼þ²âÊÔ
-			else if (SysModeSet == DEVICE_TEST)
+			else if (modeSet == DEVICE_TEST)
 			{
-				this->SystemState = SYS_STATE_TEST;
-				this->SystemOutput = SYS_OUT_TEST;
+				state = SYS_STATE_TEST;
+				outputMode = SYS_OUT_TEST;
 			}
 			//ÑÏÖØ¹ÊÕÏ
-			else if (isAbnormal == true)
+			else if (Abnormal == true)
 			{
-				this->SystemState = SYS_STATE_FAULT;
-				this->SystemOutput = SYS_OUT_FAULT;
+				state = SYS_STATE_FAULT;
+				outputMode = SYS_OUT_FAULT;
 			}
 			//ÆðÍ£°´Å¥ °´ÏÂ
 			else if (*cabinet == false)
 			{
-				this->PreChargeStep1 = false;
-				this->PreChargeStep2 = false;
-				this->SystemState = SYS_STATE_STOP;
-				this->SystemOutput = SYS_OUT_STOP;
+				PreChargeStep1 = false;
+				PreChargeStep2 = false;
+				state = SYS_STATE_STOP;
+				outputMode = SYS_OUT_STOP;
 			}
 			else
 			{
-				this->SystemState = SYS_STATE_STANDBY;
-				this->SystemOutput = SYS_OUT_STANDBY;
+				state = SYS_STATE_STANDBY;
+				outputMode = SYS_OUT_STANDBY;
 			}
 			break;
 			//¹ÊÕÏÌ¬
 		case SYS_STATE_FAULT :
 			//ÐÝÃß
-			if (SysModeSet == SLEEP)
+			if (modeSet == SLEEP)
 			{
-				this->SystemState = SYS_STATE_SLEEP;
-				this->SystemOutput = SYS_OUT_SLEEP;
+				state = SYS_STATE_SLEEP;
+				outputMode = SYS_OUT_SLEEP;
 			}
 			//Æ÷¼þ²âÊÔ
-			else if (SysModeSet == DEVICE_TEST)
+			else if (modeSet == DEVICE_TEST)
 			{
-				this->SystemState = SYS_STATE_TEST;
-				this->SystemOutput = SYS_OUT_TEST;
+				state = SYS_STATE_TEST;
+				outputMode = SYS_OUT_TEST;
 			}
 			//¹ÊÕÏÏûÊ§
-			else if (isAbnormal == false)
+			else if (Abnormal == false)
 			{
-				this->SystemState = SYS_STATE_STOP;
-				this->SystemOutput = SYS_OUT_STOP;
+				state = SYS_STATE_STOP;
+				outputMode = SYS_OUT_STOP;
 			}
 			else
 			{
-				this->SystemState = SYS_STATE_FAULT;
-				this->SystemOutput = SYS_OUT_FAULT;
+				state = SYS_STATE_FAULT;
+				outputMode = SYS_OUT_FAULT;
 			}
 			break;
 			//Æ÷¼þ²âÊÔ
 		case SYS_STATE_TEST:
 			//ÐÝÃß
-			if (SysModeSet == SLEEP)
+			if (modeSet == SLEEP)
 			{
-				this->SystemState = SYS_STATE_SLEEP;
+				state = SYS_STATE_SLEEP;
 			}
 			//ÍË³öÆ÷¼þ²âÊÔ
-			else if (SysModeSet == CHARGE)
+			else if (modeSet == CHARGE)
 			{
-				this->SystemState = SYS_STATE_STOP;
-				this->SystemOutput = SYS_OUT_STOP;
+				state = SYS_STATE_STOP;
+				outputMode = SYS_OUT_STOP;
 			}
 			else
 			{
-				this->SystemState = SYS_STATE_TEST;
-				this->SystemOutput = SYS_OUT_TEST;
+				state = SYS_STATE_TEST;
+				outputMode = SYS_OUT_TEST;
 			}
 			break;
 			//ÐÝÃßÌ¬
@@ -171,25 +171,25 @@ void System_Mode::ChargeModeManage(void)
 			//½øÈëÐÝÃß
 			if (inSleep == true)
 			{
-				this->SystemState = SYS_STATE_SLEEP;
-				this->SystemOutput = SYS_OUT_SLEEP;
+				state = SYS_STATE_SLEEP;
+				outputMode = SYS_OUT_SLEEP;
 			}
 			//ÍË³öÐÝÃß
 			else if (inSleep == false)
 			{
-				this->SystemState = SYS_STATE_STOP;
-				this->SystemOutput = SYS_OUT_STOP;
+				state = SYS_STATE_STOP;
+				outputMode = SYS_OUT_STOP;
 			}
 			else
 			{
-				this->SystemState = SYS_STATE_STOP;
-				this->SystemOutput = SYS_OUT_STOP;
+				state = SYS_STATE_STOP;
+				outputMode = SYS_OUT_STOP;
 			}
 			break;
 			//ÆäËû
 		default:
-			this->SystemState = SYS_STATE_STOP;
-			this->SystemOutput = SYS_OUT_STOP;
+			state = SYS_STATE_STOP;
+			outputMode = SYS_OUT_STOP;
 			break;
 			
 	}
@@ -399,3 +399,8 @@ void System_Mode::System_Output(void)
 	}
 }
 */
+
+void System_Mode::Run(void)
+{
+	
+}

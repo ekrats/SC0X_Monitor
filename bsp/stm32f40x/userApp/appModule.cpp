@@ -5,106 +5,105 @@
 
 void CbMode::ModuleManage(void)
 {
-	switch (State)
+	switch (state)
 	{
 		//待机态
 		case CB_STATE_IDLE:
-			if (isAbnormal == true)
+			if (Abnormal == true)
 			{
-				State = CB_STATE_FAULT;
-				OutputMode = CB_OUT_FAULT;
+				state = CB_STATE_FAULT;
+				outputMode = CB_OUT_FAULT;
 			}
 			else if (condition == false)
 			{
-				State = CB_STATE_IDLE;
-				OutputMode = CB_OUT_IDLE;
+				state = CB_STATE_IDLE;
+				outputMode = CB_OUT_IDLE;
 			}
 			else if (modeSet == CHARGE_MODE_AUTO)
 			{
-				State = CB_STATE_AUTO;
-				OutputMode = CB_OUT_AUTO;
+				state = CB_STATE_AUTO;
+				outputMode = CB_OUT_AUTO;
 			}
 			else if (modeSet == CHARGE_MODE_MANUAL)
 			{
-				State = CB_STATE_MANUAL;
-				OutputMode = CB_OUT_MANUAL;
+				state = CB_STATE_MANUAL;
+				outputMode = CB_OUT_MANUAL;
 			}
 			else
 			{
-				State = CB_STATE_IDLE;
-				OutputMode = CB_OUT_IDLE;
+				state = CB_STATE_IDLE;
+				outputMode = CB_OUT_IDLE;
 			}
 			break;
 		//手动充电
 		case CB_STATE_MANUAL:
-			if (isAbnormal == true)
+			if (Abnormal == true)
 			{
-				State = CB_STATE_FAULT;
-				OutputMode = CB_OUT_FAULT;
+				state = CB_STATE_FAULT;
+				outputMode = CB_OUT_FAULT;
 			}
 			else if (condition == false)
 			{
-				State = CB_STATE_IDLE;
-				OutputMode = CB_OUT_IDLE;
+				state = CB_STATE_IDLE;
+				outputMode = CB_OUT_IDLE;
 			}
 			else if (modeSet == CHARGE_MODE_AUTO)
 			{
-				State = CB_STATE_AUTO;
-				OutputMode = CB_OUT_AUTO;
+				state = CB_STATE_AUTO;
+				outputMode = CB_OUT_AUTO;
 			}
 			else if (modeSet == CHARGE_MODE_STANDBY)
 			{
-				State = CB_STATE_MANUAL;
-				OutputMode = CB_OUT_STANDY;
+				state = CB_STATE_MANUAL;
+				outputMode = CB_OUT_STANDY;
 			}
 			else
 			{
-				State = CB_STATE_MANUAL;
-				OutputMode = CB_OUT_MANUAL;
+				state = CB_STATE_MANUAL;
+				outputMode = CB_OUT_MANUAL;
 			}
 			break;
 		//自动充电
 		case CB_STATE_AUTO:
-			if (isAbnormal == true)
+			if (Abnormal == true)
 			{
-				State = CB_STATE_FAULT;
-				OutputMode = CB_OUT_FAULT;
+				state = CB_STATE_FAULT;
+				outputMode = CB_OUT_FAULT;
 			}
 			else if (condition == false)
 			{
-				State = CB_STATE_IDLE;
-				OutputMode = CB_OUT_IDLE;
+				state = CB_STATE_IDLE;
+				outputMode = CB_OUT_IDLE;
 			}
 			else if (modeSet == CHARGE_MODE_MANUAL)
 			{
-				State = CB_STATE_MANUAL;
-				OutputMode = CB_OUT_MANUAL;
+				state = CB_STATE_MANUAL;
+				outputMode = CB_OUT_MANUAL;
 			}
 			else
 			{
-				State = CB_STATE_AUTO;
-				OutputMode = CB_OUT_AUTO;
+				state = CB_STATE_AUTO;
+				outputMode = CB_OUT_AUTO;
 			}
 			break;
 		//故障态
 		case CB_STATE_FAULT:
-			if (isAbnormal == false)
+			if (Abnormal == false)
 			{
-				State = CB_STATE_IDLE;
-				OutputMode = CB_OUT_IDLE;
+				state = CB_STATE_IDLE;
+				outputMode = CB_OUT_IDLE;
 			}
 			else
 			{
-				State = CB_STATE_FAULT;
-				OutputMode = CB_OUT_FAULT;
+				state = CB_STATE_FAULT;
+				outputMode = CB_OUT_FAULT;
 			}
 			break;
 		default:
-				State = CB_STATE_IDLE;
-				OutputMode = CB_OUT_IDLE;
+				state = CB_STATE_IDLE;
+				outputMode = CB_OUT_IDLE;
 			break;
 	}
-	modeNow = State;
 }
 
 void CbMode::CB_Idle_Cal(void)
@@ -201,7 +200,7 @@ void CbMode::CB_Fault_Cal(void)
 
 void CbMode::OutputManage(void)
 {
-	switch (this->OutputMode)
+	switch (this->outputMode)
 	{
 		//待机态
 		case CB_OUT_IDLE:
@@ -228,10 +227,9 @@ void CbMode::OutputManage(void)
 	}
 }
 
-void CbMode::CbCtrl(void)
+void CbMode::Run(void)
 {
 	ModuleManage();
 	OutputManage();
 }
-
 

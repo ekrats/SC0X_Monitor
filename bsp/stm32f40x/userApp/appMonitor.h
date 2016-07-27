@@ -3,6 +3,7 @@
 
 #include "stm32f4xx.h"
 #include <rtthread.h>
+#include "StateMachine.h"
 
 #define CHARGE_BASE_T						10//ms
 #define PRE_CHARGE_DELAY1			(60000/CHARGE_BASE_T)//预充电时间
@@ -28,20 +29,11 @@ enum {
 	SLEEP,
 };
 
-class System_Mode
+class System_Mode :public StateMachine
 {
-public:
-		inline void ChargeModeSet(int mode)
-		{
-				SysModeSet = mode;
-		}
 private:
-		int 	SystemState;
-		int 	SystemOutput;
-		int 	SysModeSet;
 		int 	*cabinet;
 		bool	inSleep;
-		bool	isAbnormal;
 		//预充电接触器闭合
 		bool	PreChargeStep1;
 		//预充电时间之后
@@ -51,6 +43,7 @@ private:
 		
 public:
 	System_Mode(void);
+	void Run(void);
 	void StopCal(void);
 	void PreChargeCal(void);
 	void StandbyCal(void);

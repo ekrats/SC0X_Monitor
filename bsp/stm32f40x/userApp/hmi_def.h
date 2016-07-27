@@ -52,7 +52,7 @@ typedef struct _HmiBuffApp_
 //Monitor向触摸屏输出
 //--------------------------------------------------------
 	HMI_Status_STYP	mbStatus;
-	MB_Para_STYP    mbRdPara;
+	MB_Para_STYP    mbPara;
 	Version_STYP    version;
 //--------------------------------------------------------
 // 触摸屏向Monitor输出
@@ -75,7 +75,7 @@ typedef struct _mb_RegData
 	uint16_t		res1[146];
 	//uint16_t        res1[256];
 
-	MB_Para_STYP    mbRdPara;
+	MB_Para_STYP    mbPara;
 	uint16_t        res2[18];
 	CB_Para_STYP	Modue1_Para;
 	uint16_t        res3[20];

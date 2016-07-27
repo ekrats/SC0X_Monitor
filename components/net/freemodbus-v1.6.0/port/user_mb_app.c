@@ -162,7 +162,7 @@ void Bsp_Modbus_Cycle(void)
 		PDHMI(Reg)->cb4Status = p->cb4Status;
 		PDHMI(Reg)->cb5Status = p->cb5Status;
 		
-		PDHMI(Reg)->mbRdPara = p->hmi.mbRdPara;
+		PDHMI(Reg)->mbPara = p->hmi.mbPara;
 		
 		PDHMI(Reg)->Modue1_Para = p->Cb1Para;
 		PDHMI(Reg)->Modue2_Para = p->Cb2Para;

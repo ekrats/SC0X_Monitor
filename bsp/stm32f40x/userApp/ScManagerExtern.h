@@ -6,9 +6,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
-void ad_init(void);
-void io_init(void);
+
+void sc_init(void);
+void state_control(void);
 void io_output(void);
 void relays_refresh(void);
 void data_deal(void);

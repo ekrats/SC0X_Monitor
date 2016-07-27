@@ -7,6 +7,7 @@
 #include "hmi_def.h"
 #include "can_app_def.h"
 #include "DataStruct.h"
+#include "appMonitor.h"
 
 class Sc
 {
@@ -21,7 +22,6 @@ protected:
 	List<Contactor*> ContactList;
 	List<PT100*> pt100List;
 public:
-
 	DCTransducer input1Current;
 	DCTransducer input2Current;
 	DCTransducer inputAc1Voltage;
@@ -35,6 +35,7 @@ public:
 	PT100 cap1Temp;
 	PT100 cap2Temp;
 
+	IOTransducer cabinet;
 	IOTransducer inFuse1;
 	IOTransducer inFuse2;
 	IOTransducer outFuse1;

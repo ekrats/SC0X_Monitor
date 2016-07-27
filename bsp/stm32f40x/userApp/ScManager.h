@@ -12,22 +12,28 @@ public:
 	ScManager() { ; } 
 	~ScManager(){}
 	
+	void Init(void);
+	void Run(void);
 	void RelayRun(void);
 	void RefreshAdData(void);
 	void RefreshPt100Data(void);
 	void RefreshIoData(void);
 	void RefreshConData(void);
+	void UpdateCbState(void);
+	void MonitorStatusUpdata(void);
 	void ContactCheck(void);
 	void ContactRelayRun(void);
 	
-	void SetCan(CanApp & pCan);
-	void SetSysMode(System_Mode * mode);
+	void SetCan(CanApp* pCan);
 	void SlowCheck(void);
 	void MonitorCheckSlow(void);
 	void FaultCheckModuleInit(void);
 		
 private:
-	CanApp can;
+	List <CbMode *> cbModelist;
+	List<Failure*> warnList;
+	List<Failure*> failureList;
+	CanApp *can;
 	System_Mode *sysMode;
 	CbMode *cb1Mode;
 	CbMode *cb2Mode;
@@ -35,8 +41,6 @@ private:
 	CbMode *cb4Mode;
 	CbMode *cb5Mode;
 
-	List<Failure*> warnList;
-	List<Failure*> failureList;
 	RelayModule relays;
 	Relay systemResetRelay;
 
