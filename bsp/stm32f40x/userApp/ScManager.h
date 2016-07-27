@@ -20,6 +20,7 @@ public:
 	void RefreshIoData(void);
 	void RefreshConData(void);
 	void UpdateCbState(void);
+	void hmi_data_update(void);
 	void MonitorStatusUpdata(void);
 	void ContactCheck(void);
 	void ContactRelayRun(void);

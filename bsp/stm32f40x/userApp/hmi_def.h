@@ -11,7 +11,29 @@ extern "C" {
 
 #define 		true		1
 #define			false		0
-	
+
+enum {
+	NONE,
+	MODULE1,
+	MODULE2,
+	MODULE3,
+	MODULE4,
+	MODULE5,
+	MODULE_ALL = 16,
+};
+
+enum {
+	CHARGE,
+	DEVICE_TEST,
+	SLEEP,
+};
+
+enum {
+	NONE_EVENT,
+	IN_SLEEP,
+	OUT_SLEEP,
+};
+
 enum {
 	ADDR_CHARGE_EN,
 	ADDR_CHARGE_CMD,

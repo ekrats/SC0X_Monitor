@@ -31,6 +31,7 @@ enum {
 
 class System_Mode :public StateMachine
 {
+		public
 private:
 		int 	*cabinet;
 		bool	inSleep;

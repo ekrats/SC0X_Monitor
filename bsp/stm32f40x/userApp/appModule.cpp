@@ -14,7 +14,7 @@ void CbMode::ModuleManage(void)
 				state = CB_STATE_FAULT;
 				outputMode = CB_OUT_FAULT;
 			}
-			else if (condition == false)
+			else if (condition == false || chargeEnable == false)
 			{
 				state = CB_STATE_IDLE;
 				outputMode = CB_OUT_IDLE;
@@ -42,7 +42,7 @@ void CbMode::ModuleManage(void)
 				state = CB_STATE_FAULT;
 				outputMode = CB_OUT_FAULT;
 			}
-			else if (condition == false)
+			else if (condition == false || chargeEnable == false)
 			{
 				state = CB_STATE_IDLE;
 				outputMode = CB_OUT_IDLE;
@@ -70,7 +70,7 @@ void CbMode::ModuleManage(void)
 				state = CB_STATE_FAULT;
 				outputMode = CB_OUT_FAULT;
 			}
-			else if (condition == false)
+			else if (condition == false || chargeEnable == false)
 			{
 				state = CB_STATE_IDLE;
 				outputMode = CB_OUT_IDLE;

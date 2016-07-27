@@ -39,10 +39,16 @@ enum{
 
 class CbMode :public StateMachine
 {
+public:
+	void SetChargeEn(bool a)
+	{ chargeEnable = a; }
+	
 private:
 		// 摘要: 
     //     模块是否故障?
 		int 	chargeCmd;
+
+		bool	chargeEnable;
 
 		bool	condition;
 		// 摘要: 
