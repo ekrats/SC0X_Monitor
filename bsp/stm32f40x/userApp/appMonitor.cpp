@@ -7,8 +7,8 @@
 
 System_Mode::System_Mode(void)
 {
-	state = SYS_STATE_STOP;
-	outputMode = SYS_OUT_STOP;
+//	state = SYS_STATE_STOP;
+//	outputMode = SYS_OUT_STOP;
 }
 
 void System_Mode::ChargeModeManage(void)
@@ -402,5 +402,5 @@ void System_Mode::System_Output(void)
 
 void System_Mode::Run(void)
 {
-	
+	ChargeModeManage();
 }

@@ -184,7 +184,7 @@ void ScManager::UpdateFaultState(void)
         {
             if(tmp->IsOccurred())
             {
-                //sharedData.output.fault.fault_u32 |= (1 << i);
+                shareData.output.fault.fault_u32 |= (1 << i);
             }
             if(tmp->IsLocked())
             {
@@ -209,7 +209,7 @@ void ScManager::UpdateWarnState(void)
         {
             if(tmp->IsOccurred())
             {
-                //sharedData.output.fault.fault_u32 |= (1 << i);
+                shareData.output.warn.warn_u32 |= (1 << i);
             }
             if(tmp->IsLocked())
             {

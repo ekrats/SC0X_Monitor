@@ -3,6 +3,7 @@
 #include "io.h"
 #include "ad.h"
 #include "fsmc.h"
+#include "string.h"
 
 
 ScManager sc;
@@ -20,8 +21,20 @@ void ScManager::RelayRun(void)
 	ContactRelayRun();
 }
 
+void module_init(void)
+{
+	SysMode.Init(&sc.shareData.input.io.in[cabinetN]);
+	Cb1Mode.Init(7, CB_STATE_IDLE);
+	Cb2Mode.Init(8, CB_STATE_IDLE);
+	Cb3Mode.Init(9, CB_STATE_IDLE);
+	Cb4Mode.Init(10, CB_STATE_IDLE);
+	Cb5Mode.Init(11, CB_STATE_IDLE);
+}
+
 void ScManager::Init(void)
 {
+	module_init();
+	
 	sc.sysMode = &SysMode;
 	sc.cb1Mode = &Cb1Mode;
 	sc.cb2Mode = &Cb2Mode;
@@ -86,13 +99,12 @@ void sc_init(void)
 	can.scData = &sc.shareData;
 	ad_init();
 	io_init();
+	sc.Init();
 }
 
 void ScManager::MonitorStatusUpdata(void)
 {
 	HMI_Status_STYP *p = &sc.shareData.hmi.mbStatus;
-	
-	
 	
 	p->sys_mode = sysMode->GetMode();
 	p->dcdc1_mode = cb1Mode->GetMode();
@@ -204,16 +216,48 @@ void ScManager::SetCan(CanApp* pCan)
 void ScManager::Run(void)
 {
 	sc.sysMode->Run();
+	if (sc.sysMode->GetMode() == SYS_STATE_STANDBY)
+	{
+		sc.cb1Mode->SetCondition(true);
+		sc.cb2Mode->SetCondition(true);
+		sc.cb3Mode->SetCondition(true); 
+		sc.cb4Mode->SetCondition(true); 
+		sc.cb5Mode->SetCondition(true);
+	}
+	else
+	{
+		sc.cb1Mode->SetCondition(false);
+		sc.cb2Mode->SetCondition(false);
+		sc.cb3Mode->SetCondition(false); 
+		sc.cb4Mode->SetCondition(false); 
+		sc.cb5Mode->SetCondition(false);
+	}
 	sc.UpdateCbState();
 }
 
-void data_deal(void)
+void ScManager::FaultDeal(void)
+{
+	shareData.status.status_bit.sFault = shareData.output.fault.fault_u8.monitor > 0;
+	shareData.status.status_bit.dcdc1Fault = shareData.output.fault.fault_u8.dcdc1 > 0;
+	shareData.status.status_bit.dcdc2Fault = shareData.output.fault.fault_u8.dcdc2 > 0;
+	shareData.status.status_bit.dcdc3Fault = shareData.output.fault.fault_u8.dcdc3 > 0;
+	shareData.status.status_bit.dcdc4Fault = shareData.output.fault.fault_u8.dcdc4 > 0;
+	shareData.status.status_bit.dcdc5Fault = shareData.output.fault.fault_u8.dcdc5 > 0;
+	
+	sysMode->SetFaultState(shareData.status.status_bit.sFault);
+	cb1Mode->SetFaultState(shareData.status.status_bit.dcdc1Fault);
+	cb2Mode->SetFaultState(shareData.status.status_bit.dcdc2Fault);
+	cb3Mode->SetFaultState(shareData.status.status_bit.dcdc3Fault);
+	cb4Mode->SetFaultState(shareData.status.status_bit.dcdc4Fault);
+	cb5Mode->SetFaultState(shareData.status.status_bit.dcdc5Fault);
+}
+
+void data_refresh(void)
 {
 	sc.RefreshAdData();
 	sc.RefreshIoData();
 	sc.RefreshConData();
 	sc.RefreshPt100Data();
-	sc.ContactCheck();
 }
 
 void io_output(void)
@@ -258,11 +302,15 @@ void state_control(void)
 	sc.Run();
 }
 
-void slow_check(void)
+void status_updata(void)
 {
 	sc.SlowCheck();
 	
+	sc.ContactCheck();
+	
 	UpdateData();
+	
+	sc.FaultDeal();
 }
 
 void relays_refresh(void)
@@ -274,14 +322,15 @@ void relays_refresh(void)
 void ScManager::hmi_data_update(void)
 {
 	ScData * p = (ScData *)GetShareDataPtr();
+	static int oldStatus;
 	uint8_t i;
 	uint16_t	hmi_cmd1;
 	uint16_t	hmi_cmd2;
-	static uint8_t cnt1 = 0;
-	static uint8_t cnt2 = 0;
-	static uint8_t cnt3 = 0;
-	static uint8_t cnt4 = 0;
-	static uint8_t cnt5 = 0;
+	static int cnt1 = 0;
+	static int cnt2 = 0;
+	static int cnt3 = 0;
+	static int cnt4 = 0;
+	static int cnt5 = 0;
 	
 	for (i=ADDR_W_MB_PARA; i<HMI_ADDR_W_NUM-1; i++)
 	{
@@ -357,53 +406,62 @@ void ScManager::hmi_data_update(void)
 			hmi_cmd2 = p->hmi.CtrCmd.ChargeCmd.CMD2;
 			switch (hmi_cmd1){
 				case MODULE1:
-					MB_LGA.cb1_SYS.input.Charge_Mode_Set = HMI_Cmd2;
+					sc.cb1Mode->ModeSet(hmi_cmd2);
 					break;
 				case MODULE2:
-					MB_LGA.cb2_SYS.input.Charge_Mode_Set = HMI_Cmd2;
+					sc.cb2Mode->ModeSet(hmi_cmd2);
 					break;
 				case MODULE3:
-					MB_LGA.cb3_SYS.input.Charge_Mode_Set = HMI_Cmd2;
+					sc.cb3Mode->ModeSet(hmi_cmd2);
 					break;
 				case MODULE4:
-					MB_LGA.cb4_SYS.input.Charge_Mode_Set = HMI_Cmd2;
+					sc.cb4Mode->ModeSet(hmi_cmd2);
 					break;
 				case MODULE5:
-					MB_LGA.cb5_SYS.input.Charge_Mode_Set = HMI_Cmd2;
+					sc.cb5Mode->ModeSet(hmi_cmd2);
 					break;
 				default:
 					break;
 					
 			}
-			HMI.HMI_WAddr_flag[i] = false;
+			p->hmi.HMI_WAddr_flag[i] = false;
 			break;
 			
 		case ADDR_DEV_TEST:
-			MB_LGA.MB_SYS_INFO.SysModeSet = DEVICE_TEST;
-			MB_LGA.CtrCmd.DevTestCmd = HMI.CtrCmd.DevTestCmd;
-			HMI.HMI_WAddr_flag[i] = false;
+			sc.sysMode->ModeSet(DEVICE_TEST);
+			sc.sysMode->SetDevTestCmd(p->hmi.CtrCmd.DevTestCmd);
+			p->hmi.HMI_WAddr_flag[i] = false;
 			break;
 		
 		case ADDR_SLEEP:
-			MB_LGA.MB_SYS_INFO.SysModeSet = SLEEP;
-			MB_LGA.CtrCmd.SleepCmd = HMI.CtrCmd.SleepCmd;
-			HMI.HMI_WAddr_flag[i] = false;
+			if (p->hmi.CtrCmd.SleepCmd == true)
+			{
+				sc.sysMode->ModeSet(SLEEP);
+				sc.sysMode->SetSleepMode(p->hmi.CtrCmd.SleepCmd);
+				oldStatus = sc.sysMode->GetMode();
+			}
+			else if (sc.sysMode->GetMode() == SLEEP)
+			{
+				sc.sysMode->ModeSet(oldStatus);
+				sc.sysMode->SetSleepMode(p->hmi.CtrCmd.SleepCmd);
+			}
+			p->hmi.HMI_WAddr_flag[i] = false;
 			break;
 		
 		case ADDR_RESTART:
 			//发送停止充电指令
 		
 			//给控制板发送重启指令
-			can.SendCan(Reboot);
+			//can.SendCan(Reboot);
 			
 			//延时
 			
 			//监控板重启
-			HMI.HMI_WAddr_flag[i] = false;
+			p->hmi.HMI_WAddr_flag[i] = false;
 			break;
 			
 		case ADDR_RESTORE:
-			HMI.HMI_WAddr_flag[i] = false;
+			p->hmi.HMI_WAddr_flag[i] = false;
 			break;
 		
 		case ADDR_W_MB_PARA:
@@ -412,7 +470,7 @@ void ScManager::hmi_data_update(void)
 				//参数更新
 				p->hmi.mbPara = p->hmi.mbPara;
 				//参数写入Flash标志位置1
-				p->sysInfo.wParFlag = true;
+				shareData.status.status_bit.wParFlag = true;
 				p->hmi.HMI_WAddr_flag[i] = false;
 			}
 			break;
@@ -514,7 +572,7 @@ void ScManager::hmi_data_update(void)
 			
 		case ADDR_W_MB_RTC:
 			//监控板时间设置
-			HMI.HMI_WAddr_flag[i] = false;
+			p->hmi.HMI_WAddr_flag[i] = false;
 			
 		default:
 			break;

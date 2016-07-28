@@ -121,15 +121,13 @@ typedef union _sc_warn_t
         uint32_t temp_igbt1      :1;
 		uint32_t temp_igbt2      :1;
         uint32_t temp_voltage    :1;
-    }fault_bit;
+    }warn_bit;
     struct
     {
-        uint8_t l_low;
-        uint8_t l_high;
-        uint8_t h_low;
-        uint8_t h_high;
-    }fault_u8;
-    uint32_t fault_u32;
+        uint16_t l_low;
+        uint16_t l_high;
+    }warn_u16;
+    uint32_t warn_u32;
 }sc_warn_t;
 
 typedef union _sc_fault_t
@@ -169,19 +167,58 @@ typedef union _sc_fault_t
         uint32_t dcdc3			: 4 ;
 		uint32_t dcdc4			: 4 ;
 		uint32_t dcdc5			: 4 ;
+    }fault_u8;
+	struct
+    {
+        uint16_t l_low;
+        uint16_t l_high;
     }fault_u16;
     uint32_t fault_u32;
 }sc_fault_t;
 
+//---------------------------------------------------------------------------------- 
+//-----bch status struct(union)
+typedef union _sc_status_t
+{
+    struct _status_bit
+    {
+        uint32_t		wFault				: 1 ; //警告故障
+		uint32_t		sFault				: 1 ; //严重故障
+		uint32_t		dcdc1Fault			: 1 ;
+		uint32_t		dcdc2Fault			: 1 ;
+		uint32_t		dcdc3Fault			: 1 ;
+		uint32_t		dcdc4Fault			: 1 ;
+		uint32_t		dcdc5Fault			: 1 ;
+		uint32_t		busConnect			: 1 ;
+		uint32_t		busVoltOK			: 1 ; //母线电压OK
+		uint32_t		PreFinsh			: 1 ; //预充电完成状态位
+		uint32_t		Charging			: 1 ;
+		uint32_t		CanFault			: 1 ; //CAN掉线
+		uint32_t		HmiFault			: 1 ; //显示屏通信标志位 0：通讯正常 1：异常
+		uint32_t		AdFault				: 1 ; //AD板通信标志位 0：通讯正常 1：异常
+		uint32_t		wParFlag			: 1 ;
+		uint32_t		rParFlag			: 1 ;
+		uint32_t		wFaultFlg			: 1 ;
+		uint32_t		rFaultFlg			: 1 ;
+    }status_bit;
+    struct _status_u16
+    {
+        uint16_t low;
+        uint16_t high;
+    }status_u16;
+    uint32_t status_u32;
+}sc_status_t;
+
 typedef struct{
 	io_output_type  io;
 	sc_fault_t fault;
+	sc_warn_t	warn;
 }DataOutput;
 
 typedef struct{
 	DataInput 	input;
 	DataOutput	output;
-	MB_LGA_INFO		sysInfo;
+	sc_status_t status;
 	CAN_CB_Status_STYP cb1Status;
 	CAN_CB_Status_STYP cb2Status;
 	CAN_CB_Status_STYP cb3Status;

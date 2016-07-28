@@ -197,10 +197,6 @@ typedef struct _CAN_AN_VAL_       //数据来源于AD板
 //------------------------------------------------------
 typedef struct _MB_SYS_INFO_
 {
-	uint16_t 	SystemState;
-	uint16_t	OutputMode;
-	uint16_t    SysModeSet;
-	
 	uint8_t		wFault				: 1 ; //警告故障
 	uint8_t		sFault				: 1 ; //严重故障
 	uint8_t		busConnect			: 1 ;

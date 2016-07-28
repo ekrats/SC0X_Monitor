@@ -4,6 +4,7 @@
 class StateMachine
 {
 public:
+
 	void ModeSet(int mode)
 	{
 		modeSet = mode;
@@ -14,13 +15,9 @@ public:
 	int GetMode()
 	{	return state; }
 	
-	void InFaultState()
+	void SetFaultState(bool b)
 	{
-		Abnormal = true;
-	}
-	void OutFaultState()
-	{
-		Abnormal = false;
+		Abnormal = b;
 	}
 	int GetFaultState()
 	{

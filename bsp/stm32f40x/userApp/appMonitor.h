@@ -23,17 +23,17 @@
 #define SYS_OUT_TEST				0x5000
 #define SYS_OUT_SLEEP 				0x6000
 
-enum {
-	CHARGE,
-	DEVICE_TEST,
-	SLEEP,
-};
-
-class System_Mode :public StateMachine
+class System_Mode :
+	public StateMachine
 {
-		public
+public:
+	void SetDevTestCmd(int cmd)
+	{ devTestCmd = cmd; }
+	void SetSleepMode(bool sleep)
+	{ inSleep = sleep;}
 private:
 		int 	*cabinet;
+		int 	devTestCmd;
 		bool	inSleep;
 		//Ô¤³äµç½Ó´¥Æ÷±ÕºÏ
 		bool	PreChargeStep1;
@@ -44,6 +44,10 @@ private:
 		
 public:
 	System_Mode(void);
+	void Init(int * button)
+	{
+		cabinet = button;
+	}
 	void Run(void);
 	void StopCal(void);
 	void PreChargeCal(void);

@@ -1,7 +1,6 @@
 #include "ScManager.h"
 #include "ScManagerExtern.h"
 #include "hmi_def.h"
-#include "string.h"
 #include "flash_storage_at45dbxx.h"
 
 
@@ -43,14 +42,14 @@ void sys_par_read(void)
 void UserRecord(void)
 {
 	ScData * p = (ScData *)GetShareDataPtr();
-	if (p->sysInfo.wParFlag)
+	if (p->status.status_bit.wParFlag)
 	{
-		p->sysInfo.wParFlag = false;
+		p->status.status_bit.wParFlag = false;
 		sys_par_write(&p->hmi.mbPara);
 	}
-	else if (p->sysInfo.rParFlag)
+	else if (p->status.status_bit.rParFlag)
 	{
-		p->sysInfo.rParFlag = false;
+		p->status.status_bit.rParFlag = false;
 		sys_par_read();
 	}
 }

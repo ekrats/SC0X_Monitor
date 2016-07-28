@@ -17,7 +17,7 @@ static void rt_thread_entry_logic(void* parameter)
     while(1)
     {
         relays_refresh();
-		slow_check();
+		status_updata();
 		state_control();
 		rt_thread_delay(10);
     }
@@ -42,7 +42,7 @@ static void rt_thread_entry_ad(void* parameter)
         }
         adc_update();
 		io_update();
-        data_deal();
+        data_refresh();
 		io_output();
         pcmaster_record();
     }

@@ -12,11 +12,11 @@
 #define CB_STATE_AUTO				0x0020
 #define CB_STATE_FAULT				0x0030
 
-#define CB_OUT_IDLE					0x0001
-#define CB_OUT_MANUAL				0x0002
-#define CB_OUT_STANDY				0x0003
-#define CB_OUT_AUTO					0x0004
-#define CB_OUT_FAULT				0x0005
+#define CB_OUT_IDLE					0x0000
+#define CB_OUT_MANUAL				0x0001
+#define CB_OUT_STANDY				0x0002
+#define CB_OUT_AUTO					0x0003
+#define CB_OUT_FAULT				0x0004
 
 #define CHARGE_BASE_T						10//ms
 
@@ -42,7 +42,8 @@ class CbMode :public StateMachine
 public:
 	void SetChargeEn(bool a)
 	{ chargeEnable = a; }
-	
+	void SetCondition(bool isFine)
+	{ condition = isFine; }
 private:
 		// ÕªÒª: 
     //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
@@ -77,11 +78,10 @@ public:
 	CbMode(void)
 	{ ; }
 	void Run(void);
-	void Init(int index, int mode, int outputMode)
+	void Init(int index, int mode)
 	{
 		this->canIndex = index;
 		this->modeSet = mode;
-		this->outputMode = outputMode;
 	}
 	void CB_Idle_Cal(void);
 	void CB_Standby_Cal(void);
