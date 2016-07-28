@@ -17,6 +17,8 @@ void * GetShareDataPtr(void);
 void CanApp_TriggerStream_Server(void);
 void CanApp_CycleStream_Server(void);
 void can_Rx_Msg(uint8_t port, CanRxMsg* msg);
+void can_rx_thread_init(void);
+void can_tx_thread_init(void);
 
 #ifdef __cplusplus
 }

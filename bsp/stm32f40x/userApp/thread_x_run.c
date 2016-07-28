@@ -64,5 +64,9 @@ void rt_app_thread_x(void)
 	
 	cycle_thread_creat(30);
 	
+	can_rx_thread_init();
+	
+	can_rx_thread_init();
+	
 	adio_thread_creat(1);
 }
