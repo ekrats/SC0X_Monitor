@@ -19,6 +19,9 @@
 #include "board.h"
 #include "usart.h"
 #include "fsmc.h"
+#include "can.h"
+#include "spi_flash.h"
+#include "Bsp_systimer.h"
 
 /**
  * @addtogroup STM32
@@ -143,7 +146,13 @@ void rt_hw_board_init()
     rt_console_set_device(CONSOLE_DEVICE);
 #endif
 	
+	logic_board_spi_init();
+	
 	System_fsmc_init();
+	
+	System_HW_Can_Init();
+	
+	System_hw_timerInit();
 	
 #if IWDG_EN
 	IWDG_Init(1);

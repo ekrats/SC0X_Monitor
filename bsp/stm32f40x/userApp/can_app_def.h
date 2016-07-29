@@ -37,7 +37,7 @@ extern "C" {
 //#define CAN_ID_ALL					0x1F//?????
 #define CAN_ID_AD					0x1F
 
-typedef struct _Can_Ram_
+typedef struct _Can_Data_Ram_
 {
 	uint32_t  Tick;
 	uint16_t  CanPort;
@@ -51,6 +51,14 @@ typedef struct _Can_Rx_Ram_
 	CanRxMsg     data;
 
 }CAN_RX_DATA_RAM, *PCAN_RX_DATA_RAM;
+
+typedef struct _Can_Tx_Ram_
+{
+	CAN_DATA_RAM parent;
+	CanTxMsg     data;
+
+}CAN_TX_DATA_RAM, *PCAN_TX_DATA_RAM;
+
 
 enum{
 	Module1_Set_Par	= 15,

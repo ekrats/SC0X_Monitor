@@ -21,28 +21,6 @@
 extern "C" {
 #endif
 #define CAN_SEND_RETRYTIMES (3)
-
-typedef struct _Can_Ram_
-{
-	uint32_t  Tick;
-	uint16_t  CanPort;
-	uint16_t  BoardId;
-
-}CAN_DATA_RAM, *PCAN_DATA_RAM;
-	
-typedef struct _Can_Rx_Ram_
-{
-	CAN_DATA_RAM parent;
-	CanRxMsg     data;
-
-}CAN_RX_DATA_RAM, *PCAN_RX_DATA_RAM;
-
-typedef struct _Can_Tx_Ram_
-{
-	CAN_DATA_RAM parent;
-	CanTxMsg     data;
-
-}CAN_TX_DATA_RAM, *PCAN_TX_DATA_RAM;
 	
     struct CAN_HEADER
     {

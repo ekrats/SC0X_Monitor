@@ -3,113 +3,339 @@
 /*                                                                                 */
 /***********************************************************************************/
 #include "can.h"
+#include "can_app_def.h"
 //-----------------------------------------------------------------------------------
-void can_init(void);
 
+static void Can_GPIO_Configuration(void);
+static void Can_Configuration(void);
+static void Can_Filter_Configuration(void);
+static void Can_NVIC_Configuration(void);
 
-static void gpio_config(void)
+/*******************************************************************************
+* Function Name  : static void Can_GPIO_Configuration(void)
+* Description    :
+*                   
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+
+static void Can_GPIO_Configuration(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure = { 0 };
+	GPIO_InitTypeDef GPIO_InitStructure = {0};
 
-    //---------------------------------------------------------------
-    // 
-    //---------------------------------------------------------------
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN1, ENABLE);
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN2, ENABLE);
+	//---------------------------------------------------------------
+	// 开启GPIO时钟，CAN1时钟和CAN2时钟
+	//---------------------------------------------------------------
+	RCC_AHB1PeriphClockCmd(RCC_CANPeriph_PORT, ENABLE);
 
-    //---------------------------------------------------------------
-    // 
-    //---------------------------------------------------------------
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8 | GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+#if(BSP_USE_CAN1 == 1)
+	RCC_APB1PeriphClockCmd(RCC_Periph_CAN1, ENABLE);
 
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource8, GPIO_AF_CAN1);
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource9, GPIO_AF_CAN1);
-    //---------------------------------------------------------------
-    // 
-    //---------------------------------------------------------------
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+	//---------------------------------------------------------------
+	// 配置CAN1收发GPIO管脚
+	//---------------------------------------------------------------
+	GPIO_InitStructure.GPIO_Pin   = CAN1_Pin_RX | CAN1_Pin_TX;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	GPIO_Init(CAN1Port, &GPIO_InitStructure);
 
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_CAN2);
-    GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_CAN2);
+	GPIO_PinAFConfig(CAN1Port, CAN1_PinSource_RX, GPIO_AF_CAN1);
+	GPIO_PinAFConfig(CAN1Port, CAN1_PinSource_TX, GPIO_AF_CAN1); 
+#endif
+
+#if(BSP_USE_CAN2 == 1)
+	RCC_APB1PeriphClockCmd(RCC_Periph_CAN2, ENABLE);
+
+	//---------------------------------------------------------------
+	// 配置CAN2收发GPIO管脚
+	//---------------------------------------------------------------
+	GPIO_InitStructure.GPIO_Pin   = CAN2_Pin_RX | CAN2_Pin_TX;
+	GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+	GPIO_Init(CAN2Port, &GPIO_InitStructure);
+
+	GPIO_PinAFConfig(CAN2Port, CAN2_PinSource_RX, GPIO_AF_CAN2);
+	GPIO_PinAFConfig(CAN2Port, CAN2_PinSource_TX, GPIO_AF_CAN2); 
+#endif
 }
 
-void can_config(void)
-{
-    CAN_InitTypeDef CAN_InitStructure = { 0 };
+/*******************************************************************************
+* Function Name  : static void Can_Configuration(void)
+* Description    : 
+*                   
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
 
-    //---------------------------------------------------------------
-    // DeInit CAN1,CAN2
-    //---------------------------------------------------------------
-    CAN_DeInit(CAN1);
-    CAN_DeInit(CAN2);
-    
-    //---------------------------------------------------------------
-    // ??????????
-    //---------------------------------------------------------------
-    CAN_StructInit(&CAN_InitStructure);
-    //---------------------------------------------------------------
-    // ???CAN1,CAN2, ??????,
-    //---------------------------------------------------------------
-    CAN_InitStructure.CAN_TTCM = DISABLE;
-    CAN_InitStructure.CAN_ABOM = ENABLE;
-    CAN_InitStructure.CAN_AWUM = DISABLE;
-    CAN_InitStructure.CAN_NART = DISABLE;
-    CAN_InitStructure.CAN_RFLM = DISABLE;
-    CAN_InitStructure.CAN_TXFP = DISABLE;
-    CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;
-    
-    CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;
-    CAN_InitStructure.CAN_BS1 = CAN_BS1_3tq;
-    CAN_InitStructure.CAN_BS2 = CAN_BS2_3tq;
-    CAN_InitStructure.CAN_Prescaler = 6;  //42M/6*(1+3+3)
-    
-    CAN_Init(CAN1, &CAN_InitStructure);
-    CAN_Init(CAN2, &CAN_InitStructure);
+static void Can_Configuration(void)
+{
+	CAN_InitTypeDef CAN_InitStructure = {0};
+
+#if(BSP_USE_CAN1 == 1)
+	//---------------------------------------------------------------
+	// 反初始化CAN1
+	//---------------------------------------------------------------
+	CAN_DeInit(CAN1);
+	//---------------------------------------------------------------
+	// 置缺省值至相关寄存器
+	//---------------------------------------------------------------
+	CAN_StructInit(&CAN_InitStructure);
+	//---------------------------------------------------------------
+	// 初始化CAN, 置相关寄存器，
+	//---------------------------------------------------------------
+	CAN_InitStructure.CAN_TTCM = DISABLE;
+	CAN_InitStructure.CAN_ABOM = ENABLE;
+	CAN_InitStructure.CAN_AWUM = DISABLE;
+	CAN_InitStructure.CAN_NART = DISABLE;
+	CAN_InitStructure.CAN_RFLM = DISABLE;
+	CAN_InitStructure.CAN_TXFP = DISABLE;
+	CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;
+	//---------------------------------------------------------------
+	// CAN clocked at 42 MHz
+	// 42M/(7*(1+4+1)) = 500Kbps
+	// CAN_InitStructure.CAN_SJW  = CAN_SJW_1tq;
+	// CAN_InitStructure.CAN_BS1  = CAN_BS1_12tq;
+	// CAN_InitStructure.CAN_BS2  = CAN_BS2_1tq;
+	// CAN_InitStructure.CAN_Prescaler = 6;  
+	//---------------------------------------------------------------
+	CAN_InitStructure.CAN_SJW  = CAN_SJW_1tq;
+	CAN_InitStructure.CAN_BS1  = CAN_BS1_4tq;
+	CAN_InitStructure.CAN_BS2  = CAN_BS2_1tq;
+	CAN_InitStructure.CAN_Prescaler = 7;
+
+	CAN_Init(CAN1, &CAN_InitStructure);
+#endif
+
+#if(BSP_USE_CAN2 == 1)
+	//---------------------------------------------------------------
+	// 反初始化CAN2
+	//---------------------------------------------------------------
+	CAN_DeInit(CAN2);
+	//---------------------------------------------------------------
+	// 置缺省值至相关寄存器
+	//---------------------------------------------------------------
+	CAN_StructInit(&CAN_InitStructure);
+	//---------------------------------------------------------------
+	// 初始化CAN, 置相关寄存器，
+	//---------------------------------------------------------------
+	CAN_InitStructure.CAN_TTCM = DISABLE;
+	CAN_InitStructure.CAN_ABOM = ENABLE;
+	CAN_InitStructure.CAN_AWUM = DISABLE;
+	CAN_InitStructure.CAN_NART = DISABLE;
+	CAN_InitStructure.CAN_RFLM = DISABLE;
+	CAN_InitStructure.CAN_TXFP = DISABLE;
+	CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;
+	//---------------------------------------------------------------
+	// CAN clocked at 42 MHz
+	// 42M/(7*(1+4+1)) = 1Mbps
+	// CAN_InitStructure.CAN_SJW  = CAN_SJW_1tq;
+	// CAN_InitStructure.CAN_BS1  = CAN_BS1_4tq;
+	// CAN_InitStructure.CAN_BS2  = CAN_BS2_1tq;
+	// CAN_InitStructure.CAN_Prescaler = 7;
+	//---------------------------------------------------------------
+	CAN_InitStructure.CAN_SJW  = CAN_SJW_1tq;
+	CAN_InitStructure.CAN_BS1  = CAN_BS1_4tq;
+	CAN_InitStructure.CAN_BS2  = CAN_BS2_1tq;
+	CAN_InitStructure.CAN_Prescaler = 7;
+
+	CAN_Init(CAN2, &CAN_InitStructure);
+#endif
 }
 
-void can_nvic_config(void)
+/*******************************************************************************
+* Function Name  : static void Can_Filter_Configuration(void)
+* Description    : 
+*                   
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+
+static void Can_Filter_Configuration(void)
 {
-    NVIC_InitTypeDef NVIC_InitStructure = { 0 };
+	CAN_FilterInitTypeDef CAN_FilterInitStructure = {0};
 
-    //-------------------------------------------------------------
-    // ??CAN1?????	
-    //-------------------------------------------------------------
-    NVIC_InitStructure.NVIC_IRQChannel = CAN1_RX0_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
+	CAN_FilterInitStructure.CAN_FilterMode           = CAN_FilterMode_IdMask;
+	CAN_FilterInitStructure.CAN_FilterScale          = CAN_FilterScale_32bit;
+#if(BSP_USE_CAN1 == 1)
+	//----------------------------------------------------------------
+	// CAN1接收全部数据
+	//----------------------------------------------------------------
+//	CAN_FilterInitStructure.CAN_FilterNumber         = 0;
+//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0000;
+//	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = 0x0000;
+//	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0000; 
+//	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
+//	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
+//	CAN_FilterInit(&CAN_FilterInitStructure);
 
-    //-------------------------------------------------------------
-    // ??CAN2?????	
-    //-------------------------------------------------------------
-    NVIC_InitStructure.NVIC_IRQChannel = CAN2_RX0_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
+	////---------------------------------------------------------------
+	//// CAN的滤波器设定
+	////---------------------------------------------------------------
+	CAN_FilterInitStructure.CAN_FilterMode           = CAN_FilterMode_IdMask;
+	CAN_FilterInitStructure.CAN_FilterScale          = CAN_FilterScale_32bit;
+	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = CAN_SINK_ID_MASK;
+	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0;
+	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
+	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
+	//-------------------------------------------------------------
+	// CAN1滤波器设定   
+	//-------------------------------------------------------------
+	//第一个滤波器
+	CAN_FilterInitStructure.CAN_FilterNumber         = 0;
+	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1<<3);
+	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
+	CAN_FilterInit(&CAN_FilterInitStructure);
+	////第二个滤波器
+	CAN_FilterInitStructure.CAN_FilterNumber         = 1;
+	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1CX<<3);
+	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
+	CAN_FilterInit(&CAN_FilterInitStructure);
+	////第三个滤波器
+//	CAN_FilterInitStructure.CAN_FilterNumber         = 2;
+//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
+//	CAN_FilterInit(&CAN_FilterInitStructure);
+	////第四个滤波器
+	//CAN_FilterInitStructure.CAN_FilterNumber         = 3;
+	//CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+	//CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0020;
+	//CAN_FilterInit(&CAN_FilterInitStructure);
+	////第五个滤波器
+//	CAN_FilterInitStructure.CAN_FilterNumber         = 4;
+//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0080;
+//	CAN_FilterInit(&CAN_FilterInitStructure);
+#endif
+
+#if(BSP_USE_CAN2 == 1)    
+	//----------------------------------------------------------------
+	// CAN2接收全部数据
+	//----------------------------------------------------------------
+//	CAN_FilterInitStructure.CAN_FilterNumber         = 14;
+//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0000;
+//	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = 0x0000;
+//	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0000; 
+//	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
+//	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
+//	CAN_FilterInit(&CAN_FilterInitStructure);
+
+	////---------------------------------------------------------------
+	//// CAN的滤波器设定
+	////---------------------------------------------------------------
+	CAN_FilterInitStructure.CAN_FilterMode           = CAN_FilterMode_IdMask;
+	CAN_FilterInitStructure.CAN_FilterScale          = CAN_FilterScale_32bit;
+	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = CAN_SINK_ID_MASK;
+	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0;
+	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
+	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
+	////-------------------------------------------------------------
+	//// CAN2滤波器设定   
+	////-------------------------------------------------------------
+	////第一个滤波器
+	CAN_FilterInitStructure.CAN_FilterNumber         = 14;
+	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1<<3);
+	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
+	CAN_FilterInit(&CAN_FilterInitStructure); 
+	////第二个滤波器
+	CAN_FilterInitStructure.CAN_FilterNumber         = 15;
+	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1CX<<3);
+	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
+	CAN_FilterInit(&CAN_FilterInitStructure);
+	////第三个滤波器
+//	CAN_FilterInitStructure.CAN_FilterNumber         = 16;
+//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0070;
+//	CAN_FilterInit(&CAN_FilterInitStructure);
+	////第四个滤波器
+	//CAN_FilterInitStructure.CAN_FilterNumber         = 17;
+	//CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+	//CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0020;
+	//CAN_FilterInit(&CAN_FilterInitStructure);
+	////第五个滤波器
+	//CAN_FilterInitStructure.CAN_FilterNumber         = 18;
+	//CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+	//CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0080;
+	//CAN_FilterInit(&CAN_FilterInitStructure);
+#endif
 }
 
-//===================================================================================
-//can硬件初始化
-//
-//===================================================================================
-void can_init(void)
+/*******************************************************************************
+* Function Name  : Can_NVIC_Configuration
+* Description    : 
+*                   
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+
+static void Can_NVIC_Configuration(void)
 {
-    gpio_config();
-    can_config();
-    can_nvic_config();
+	NVIC_InitTypeDef NVIC_InitStructure = {0};
+
+#if(BSP_USE_CAN1 == 1)
+	//-------------------------------------------------------------
+	// 配置CAN1中断向量表   
+	//-------------------------------------------------------------
+	NVIC_InitStructure.NVIC_IRQChannel                   = CAN1_RX0_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 2;
+	NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+#endif
+
+#if(BSP_USE_CAN2 == 1)
+	//-------------------------------------------------------------
+	// 配置CAN2中断向量表   
+	//-------------------------------------------------------------
+	NVIC_InitStructure.NVIC_IRQChannel                   = CAN2_RX0_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 2;
+	NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+#endif
+}
+
+/*******************************************************************************
+* Function Name  : System_HW_Can_Init
+* Description    :
+*                   
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+
+int System_HW_Can_Init(void)
+{
+	//---------------------------------------------------------------
+	// CAN GPIO管脚配置
+	//---------------------------------------------------------------
+	Can_GPIO_Configuration();
+
+	//---------------------------------------------------------------
+	// CAN控制器配置
+	//---------------------------------------------------------------
+	Can_Configuration();
+
+	//---------------------------------------------------------------
+	// CAN滤波器配置
+	//---------------------------------------------------------------
+	Can_Filter_Configuration();
+
+	//---------------------------------------------------------------
+	// CAN中断向量表配置
+	//---------------------------------------------------------------
+	Can_NVIC_Configuration();
+
+	return 1;
 }
 
 
@@ -180,7 +406,7 @@ void can_services_init()
                                     1024, 15, 10);
     if (can_services_thread != RT_NULL)
     {
-        rt_thread_startup(can_services_thread);
+        //rt_thread_startup(can_services_thread);
     }
 
     //rt_sem_init(&sem_serial_rx, "usart_rx", 0, 1);
@@ -232,64 +458,32 @@ void CAN2_RX0_IRQHandler(void)
 
 uint32_t can_send_buffer(uint8_t port, CanTxMsg* msg)
 {
-    CAN_TX_DATA_RAM * tx_buffer = RT_NULL;
+   CAN_TX_TYPEDEF * tx_buffer = RT_NULL;
     uint8_t * tmp = msg->Data;
     
-    while(tmp != RT_NULL)
-    {
-        tx_buffer = rt_malloc(sizeof(CAN_TX_DATA_RAM));
-        if(tx_buffer != RT_NULL)
-        {
-            tx_buffer->parent.CanPort = port;
-			tx_buffer->data.StdId = msg->StdId;
-			tx_buffer->data.ExtId = msg->ExtId;
-			tx_buffer->data.IDE = msg->IDE;
-			tx_buffer->data.RTR = msg->RTR;
-			tx_buffer->data.DLC = msg->DLC;
-            tx_buffer->data.Data[0] = tmp[0];
-            tx_buffer->data.Data[1] = tmp[1];
-            tx_buffer->data.Data[2] = tmp[2];
-            tx_buffer->data.Data[3] = tmp[3];
-            tx_buffer->data.Data[4] = tmp[4];
-            tx_buffer->data.Data[5] = tmp[5];
-            tx_buffer->data.Data[6] = tmp[6];
-            tx_buffer->data.Data[7] = tmp[7];
-            rt_mb_send(&mb_can_tx, (rt_uint32_t)tx_buffer);
-        }
-        else
-        {
-            return 1;
-        }
-    }
-    
-    return 0;
-}
-
-uint32_t can_send_buffer_with_frame(uint32_t port, uint8_t * buffer, int length)
-{
-    CAN_TX_TYPEDEF * tx_buffer = RT_NULL;
-    uint8_t * tmp = buffer;
-    
-    tx_buffer = rt_malloc(sizeof(CAN_TX_TYPEDEF));
-    if(tx_buffer != RT_NULL)
-    {
-        tx_buffer->data.StdId = port;
-        tx_buffer->data.Data[0] = *tmp++;
-        tx_buffer->data.Data[1] = *tmp++;
-        tx_buffer->data.Data[2] = *tmp++;
-        tx_buffer->data.Data[3] = *tmp++;
-        tx_buffer->data.Data[4] = *tmp++;
-        tx_buffer->data.Data[5] = *tmp++;
-        tx_buffer->data.Data[6] = *tmp++;
-        tx_buffer->data.Data[7] = *tmp++;
-        tx_buffer->data.DLC = length;
-        rt_mb_send(&mb_can_tx, (rt_uint32_t)tx_buffer);
-    }
-    else
-    {
-        return 1;
-    }
-    
+	tx_buffer = rt_malloc(sizeof(CAN_TX_TYPEDEF));
+	if(tx_buffer != RT_NULL)
+	{
+		tx_buffer->header.port = port;
+		tx_buffer->data.StdId = msg->StdId;
+		tx_buffer->data.ExtId = msg->ExtId;
+		tx_buffer->data.IDE = msg->IDE;
+		tx_buffer->data.RTR = msg->RTR;
+		tx_buffer->data.DLC = msg->DLC;
+		tx_buffer->data.Data[0] = tmp[0];
+		tx_buffer->data.Data[1] = tmp[1];
+		tx_buffer->data.Data[2] = tmp[2];
+		tx_buffer->data.Data[3] = tmp[3];
+		tx_buffer->data.Data[4] = tmp[4];
+		tx_buffer->data.Data[5] = tmp[5];
+		tx_buffer->data.Data[6] = tmp[6];
+		tx_buffer->data.Data[7] = tmp[7];
+		rt_mb_send(&mb_can_tx, (rt_uint32_t)tx_buffer);
+	}
+	else
+	{
+		return 1;
+	}
     return 0;
 }
 

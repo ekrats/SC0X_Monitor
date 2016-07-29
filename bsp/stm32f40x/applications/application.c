@@ -25,6 +25,7 @@
 #include "iap_service.h"
 #include <string.h>
 #include "serial_comm_util.h"
+#include "ScManagerExtern.h"
 #include "own_flash.h"
 #include "pcmaster.h"
 

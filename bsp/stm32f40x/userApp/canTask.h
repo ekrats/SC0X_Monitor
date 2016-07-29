@@ -22,10 +22,6 @@ extern "C" {
 //----------------------------------------
 #define CAN_RX_TIMEOUT  100000
 	
-void can_rx_thread_init(void);
-void can_tx_thread_init(void);
-void Bsp_can_send_trigger_event(void);
-	
 #ifdef __cplusplus
 }
 #endif

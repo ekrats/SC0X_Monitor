@@ -176,8 +176,6 @@ static void can_tx_thread_entry(void* parameter)
 {
     static uint8_t timeDelay = 0;
 	
-		Bsp_can_event_init();
-	
 	for(;;)
 	{
 		//------------------------------------------------------
@@ -230,6 +228,9 @@ static void can_tx_thread_entry(void* parameter)
 void can_tx_thread_init(void)
 {
     rt_err_t result;
+	
+	Bsp_can_event_init();
+	
     result = rt_thread_init(&can_tx_thread, "can_s_tx", can_tx_thread_entry,
         RT_NULL, &can_tx_thread_stack[0],
         sizeof(can_tx_thread_stack), CAN_TX_THREAD_PRI, CAN_TX_THREAD_SLICE);
@@ -243,7 +244,7 @@ void can_tx_thread_init(void)
         rt_kprintf("can_tx_thread init fail\n");
 #endif
     }
-		CanStartComm = 1;
+	CanStartComm = 1;
 }
 
 //================================================================
@@ -273,7 +274,7 @@ static void can1_rx_thread_entry(void* parameter)
         else
         {
             s_rx_timeout_flag = 0;
-			can_Rx_Msg(1, msg);
+			can_rx_interface(1, msg);
         }
     }
 }
@@ -305,7 +306,7 @@ static void can2_rx_thread_entry(void* parameter)
         else
         {
             s_rx_timeout_flag = 0;
-			can_Rx_Msg(2, msg);
+			can_rx_interface(2, msg);
         }
     }
 }

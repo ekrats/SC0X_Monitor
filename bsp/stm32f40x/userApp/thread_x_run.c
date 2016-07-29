@@ -60,13 +60,11 @@ static void cycle_thread_creat(uint8_t priority)
 
 void rt_app_thread_x(void)
 {
-	logic_thread_creat(6);
+	logic_thread_creat(12);
 	
 	cycle_thread_creat(30);
 	
-	can_rx_thread_init();
+	adio_thread_creat(7);
 	
-	can_rx_thread_init();
-	
-	adio_thread_creat(1);
+	gbch_init();
 }

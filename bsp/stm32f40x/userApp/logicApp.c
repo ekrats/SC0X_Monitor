@@ -35,16 +35,14 @@ static void rt_thread_entry_ad(void* parameter)
     
     while(1)
     {
-        if(-RT_ETIMEOUT == rt_sem_take(&sem_ad_task, 5))
+        if(-RT_ETIMEOUT == rt_sem_take(&sem_ad_task, 10))
         {
-            ADC_SoftwareStartConv(ADC1);
-            //adc_i_update();
+			adc_update();
+			io_update();
+			data_refresh();
+			io_output();
+			pcmaster_record();
         }
-        adc_update();
-		io_update();
-        data_refresh();
-		io_output();
-        pcmaster_record();
     }
 }
 

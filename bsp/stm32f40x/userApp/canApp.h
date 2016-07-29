@@ -16,12 +16,10 @@ public:
 
 	CanApp(void);
 	CanBuf_config CanBuf;
-//	AppBuf_config AppBuf;
 	uint16_t    CanCnt;
 	uint16_t	CanFltCnt[6];
 	uint16_t    CanStateWord;
 
-	void SendCan(uint8_t frame);					//CANÅ¼·¢Ö¡·¢ËÍº¯Êý
 	void CycleMsgUpdate_data(void);
 	void CycleMsgPush(void);
 	void TriggerMsgUpdate_data(uint8_t frame);

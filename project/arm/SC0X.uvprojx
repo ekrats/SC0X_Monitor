@@ -463,19 +463,39 @@
           <GroupName>Drivers</GroupName>
           <Files>
             <File>
-              <FileName>hardware_crc32.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\bsp\stm32f40x\drivers\hardware_crc32.c</FilePath>
-            </File>
-            <File>
               <FileName>board.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\bsp\stm32f40x\drivers\board.c</FilePath>
             </File>
             <File>
+              <FileName>can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\stm32f40x\drivers\can.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32f4xx_it.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\bsp\stm32f40x\drivers\stm32f4xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>Bsp_systimer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\stm32f40x\drivers\Bsp_systimer.c</FilePath>
+            </File>
+            <File>
+              <FileName>hardware_crc32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\stm32f40x\drivers\hardware_crc32.c</FilePath>
+            </File>
+            <File>
+              <FileName>update_application.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\stm32f40x\drivers\update_application.c</FilePath>
+            </File>
+            <File>
+              <FileName>own_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\stm32f40x\drivers\own_flash.c</FilePath>
             </File>
             <File>
               <FileName>usart.c</FileName>
@@ -496,21 +516,6 @@
               <FileName>ad.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\bsp\stm32f40x\drivers\ad.c</FilePath>
-            </File>
-            <File>
-              <FileName>can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\bsp\stm32f40x\drivers\can.c</FilePath>
-            </File>
-            <File>
-              <FileName>own_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\bsp\stm32f40x\drivers\own_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>update_application.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\bsp\stm32f40x\drivers\update_application.c</FilePath>
             </File>
           </Files>
         </Group>

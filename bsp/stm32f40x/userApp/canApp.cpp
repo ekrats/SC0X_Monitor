@@ -418,23 +418,6 @@ void CanApp::TriggerMsgUpdate_data(uint8_t frame)
 	}
 }
 
-/*******************************************************************************
-* Function Name  : void cantx(uint8_t frame)
-* Description    :
-*                   
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-void CanApp::SendCan(uint8_t frame)
-{
-	if(frame < CAN_STD_FRAME_NUM)
-	{
-		TriggerMsgUpdate_data(frame);
-		Bsp_can_send_trigger_event();
-	}
-}
-
 
 /*******************************************************************************
 * Function Name  : void CanApp_MakeTxAckMsg(uint32_t extID, uint8_t len, uint8_t* data, CanTxMsg* msg)
@@ -492,7 +475,7 @@ uint32_t CanApp::MakeCanMsgExtID(uint8_t classID, uint8_t func,  uint8_t frame,
 	return (*(uint32_t*)&id & 0x1FFFFFFF);
 }
 
-void can_Rx_Msg(uint8_t port, CanRxMsg* msg)
+void can_rx_interface(uint8_t port, CanRxMsg* msg)
 {
 	CAN_RX_DATA_RAM * rx_buffer = RT_NULL;
     uint8_t * tmp = msg->Data;
@@ -561,4 +544,46 @@ void CanApp_CycleStream_Server(void)
 void CanApp_TriggerStream_Server(void)
 {
 	can.TriggerMsgPush();
+}
+
+/*******************************************************************************
+* Function Name  : void cantx(uint8_t frame)
+* Description    :
+*                   
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void SendCan(uint8_t frame)
+{
+	if(frame < CAN_STD_FRAME_NUM)
+	{
+		can.TriggerMsgUpdate_data(frame);
+		Bsp_can_send_trigger_event();
+	}
+}
+
+//================================================================
+//Function Name: 
+//Description  :BCH通讯初始化
+//Input        : 
+//Output       : 
+//Return       : 
+//================================================================
+void gbch_init(void)
+{
+    can_services_init();
+    can_rx_thread_init();
+	can_tx_thread_init();
+
+	//---------------------------------------------------------------
+	// 打开CAN控制器中断
+	//---------------------------------------------------------------
+#if(BSP_USE_CAN1 == 1)
+	CAN_ITConfig(CAN1, CAN_IT_FMP0, ENABLE);
+#endif
+
+#if(BSP_USE_CAN2 == 1)
+	CAN_ITConfig(CAN2, CAN_IT_FMP0, ENABLE);
+#endif
 }
