@@ -1,106 +1,86 @@
 #include "ScManager.h"
 
-Relay inFuse1Delay(400);
-Relay inFuse2Delay(400);
-Relay outFuse1Delay(400);
-Relay outFuse2Delay(400);
+static ScFailure canTimeOutWarn(36,200,200);
+static ScFailure adTimeOutWarn(3,200,200);
+static ScFailure fanInTempOverWarn(3,200,200);
+static ScFailure fanOutTempOverWarn(3,200,200);
 
-Relay outFuse3Delay(400);
-Relay outFuse4Delay(400);
-Relay outFuse5Delay(400);
-Relay ac1OverDelay(400);
+static ScFailure fanInSensorFailWarn(3,200,200);
+static ScFailure fanOutSensorFailWarn(3,200,200);
+static ScFailure acModule1SensorFailWarn(3,200,200);
+static ScFailure acModule2SensorFailWarn(3,200,200);
 
-static Failure canTimeOutWarn(3);
-static Failure adTimeOutWarn(3);
-static Failure fanInTempOverWarn(3);
-static Failure fanOutTempOverWarn(3);
+static ScFailure cap1SensorFailWarn(3,200,200);
+static ScFailure cap2SensorFailWarn(3,200,200);
+static ScFailure preConFeedbackWarn(3,200,200);
+static ScFailure main1ConFeedbackWarn(3,200,200);
 
-static Failure fanInSensorFailWarn(3);
-static Failure fanOutSensorFailWarn(3);
-static Failure acModule1SensorFailWarn(3);
-static Failure acModule2SensorFailWarn(3);
+static ScFailure main2ConFeedbackWarn(3,200,200);
+static ScFailure out1ConFeedbackWarn(3,200,200);
+static ScFailure out2ConFeedbackWarn(3,200,200);
+static ScFailure out3ConFeedbackWarn(3,200,200);
 
-static Failure cap1SensorFailWarn(3);
-static Failure cap2SensorFailWarn(3);
-static Failure preConFeedbackWarn(3);
-static Failure main1ConFeedbackWarn(3);
+static ScFailure out4ConFeedbackWarn(3,200,200);
+static ScFailure out5ConFeedbackWarn(3,200,200);
+static ScFailure ac1SensorFailWarn(3,200,200);
+static ScFailure ac2SensorFailWarn(3,200,200);
 
-static Failure main2ConFeedbackWarn(3);
-static Failure out1ConFeedbackWarn(3);
-static Failure out2ConFeedbackWarn(3);
-static Failure out3ConFeedbackWarn(3);
+static ScFailure busSensorFailWarn(3,200,200);
+static ScFailure ac1UnderWarn(3,200,200);
+static ScFailure ac2UnderWarn(3,200,200);
+static ScFailure ctrlParAbnomalWarn(3,200,200);
 
-static Failure out4ConFeedbackWarn(3);
-static Failure out5ConFeedbackWarn(3);
-static Failure ac1SensorFailWarn(3);
-static Failure ac2SensorFailWarn(3);
+static ScFailure adJustAbnomalWarn(3,200,200);
+static ScFailure dcdc1pwmOnWarn(3,200,200);
+static ScFailure dcdc2pwmOnWarn(3,200,200);
+static ScFailure dcdc3pwmOnWarn(3,200,200);
+static ScFailure dcdc4pwmOnWarn(3,200,200);
+static ScFailure dcdc5pwmOnWarn(3,200,200);
 
-static Failure busSensorFailWarn(3);
-static Failure ac1UnderWarn(3);
-static Failure ac2UnderWarn(3);
-static Failure ctrlParAbnomalWarn(3);
+static ScFailure inFuse1Fault(3,200,200);
+static ScFailure inFuse2Fault(3,200,200);
 
-static Failure adJustAbnomalWarn(3);
-static Failure dcdc1pwmOnWarn(3);
-static Failure dcdc2pwmOnWarn(3);
-static Failure dcdc3pwmOnWarn(3);
-static Failure dcdc4pwmOnWarn(3);
-static Failure dcdc5pwmOnWarn(3);
+static ScFailure outFuse1Fault(3,200,200);
+static ScFailure outFuse2Fault(3,200,200);
+static ScFailure outFuse3Fault(3,200,200);
+static ScFailure outFuse4Fault(3,200,200);
+static ScFailure outFuse5Fault(3,200,200);
 
-static Failure inFuse1Fault(3);
-static Failure inFuse2Fault(3);
+static ScFailure ac1OverFault(36,200,200);
+static ScFailure ac2OverFault(36,200,200);
+static ScFailure busOverFault(36,200,200);
+static ScFailure busUnderFault(36,200,200);
 
-static Failure outFuse1Fault(3);
-static Failure outFuse2Fault(3);
-static Failure outFuse3Fault(3);
-static Failure outFuse4Fault(3);
-static Failure outFuse5Fault(3);
+static ScFailure dcdc1BatOverFault(36,200,200);
+static ScFailure dcdc2BatOverFault(36,200,200);
+static ScFailure dcdc3BatOverFault(36,200,200);
+static ScFailure dcdc4BatOverFault(36,200,200);
+static ScFailure dcdc5BatOverFault(36,200,200);
 
-static Failure ac1OverFault(36);
-static Failure ac2OverFault(36);
-static Failure busOverFault(36);
-static Failure busUnderFault(36);
+static ScFailure module1TempOverFault(36,200,200);
+static ScFailure module2TempOverFault(36,200,200);
+static ScFailure cap1TempOverFault(36,200,200);
+static ScFailure cap2TempOverFault(36,200,200);
 
-static Failure dcdc1BatOverFault(36);
-static Failure dcdc2BatOverFault(36);
-static Failure dcdc3BatOverFault(36);
-static Failure dcdc4BatOverFault(36);
-static Failure dcdc5BatOverFault(36);
+static ScFailure uOut1SensorFailFault(36,200,200);
+static ScFailure uOut2SensorFailFault(36,200,200);
+static ScFailure uOut3SensorFailFault(36,200,200);
+static ScFailure uOut4SensorFailFault(36,200,200);
+static ScFailure uOut5SensorFailFault(36,200,200);
 
-static Failure module1TempOverFault(36);
-static Failure module2TempOverFault(36);
-static Failure cap1TempOverFault(36);
-static Failure cap2TempOverFault(36);
+static ScFailure module1SensorFailFault(36,200,200);
+static ScFailure module2SensorFailFault(36,200,200);
+static ScFailure module1CurrentOverFault(36,200,200);
+static ScFailure module2CurrentOverFault(36,200,200);
 
-static Failure uOut1SensorFailFault(36);
-static Failure uOut2SensorFailFault(36);
-static Failure uOut3SensorFailFault(36);
-static Failure uOut4SensorFailFault(36);
-static Failure uOut5SensorFailFault(36);
-
-static Failure module1SensorFailFault(36);
-static Failure module2SensorFailFault(36);
-static Failure module1CurrentOverFault(36);
-static Failure module2CurrentOverFault(36);
-
-static Failure dcdc1pwmOffFailFault(36);
-static Failure dcdc2pwmOffFailFault(36);
-static Failure dcdc3pwmOffFailFault(36);
-static Failure dcdc4pwmOffFailFault(36);
-static Failure dcdc5pwmOffFailFault(36);
+static ScFailure dcdc1pwmOffFailFault(36,200,200);
+static ScFailure dcdc2pwmOffFailFault(36,200,200);
+static ScFailure dcdc3pwmOffFailFault(36,200,200);
+static ScFailure dcdc4pwmOffFailFault(36,200,200);
+static ScFailure dcdc5pwmOffFailFault(36,200,200);
 
 void ScManager::FaultCheckModuleInit(void)
 {
-	relays.Register(&inFuse1Delay);
-	relays.Register(&inFuse2Delay);
-	relays.Register(&outFuse1Delay);
-	relays.Register(&outFuse2Delay);
-	
-	relays.Register(&outFuse3Delay);
-	relays.Register(&outFuse4Delay);
-	relays.Register(&outFuse5Delay);
-	relays.Register(&ac1OverDelay);
-	
 	warnList.Add(&canTimeOutWarn);
 	warnList.Add(&adTimeOutWarn);
 	warnList.Add(&fanInTempOverWarn);
@@ -171,6 +151,22 @@ void ScManager::FaultCheckModuleInit(void)
 	failureList.Add(&dcdc5pwmOffFailFault);
 }
 
+void ScManager::RefreshFaultList(void)
+{
+    if(!faultListLock)
+    {
+        faultListLock = true;
+        failureList.Begin();
+        ScFailure * tmp = NULL;
+
+        while ((tmp = failureList.Next()) != NULL)
+        {
+            tmp->UpdateScFailureState();
+        }
+        faultListLock = false;
+    }
+}
+
 void ScManager::UpdateFaultState(void)
 {
     if(!faultListLock)
@@ -186,6 +182,10 @@ void ScManager::UpdateFaultState(void)
             {
                 shareData.output.fault.fault_u32 |= (1 << i);
             }
+			else
+			{
+				shareData.output.fault.fault_u32 &= ~(1 << i);
+			}
             if(tmp->IsLocked())
             {
                 //sharedData.output.state.status_bit.defect = 1;
@@ -193,6 +193,22 @@ void ScManager::UpdateFaultState(void)
             ++i;
         }
         faultListLock = false;
+    }
+}
+
+void ScManager::RefreshWarnList(void)
+{
+	if(!warnListLock)
+    {
+        warnListLock = true;
+        warnList.Begin();
+        ScFailure * tmp = NULL;
+
+        while ((tmp = warnList.Next()) != NULL)
+        {
+            tmp->UpdateScFailureState();
+        }
+        warnListLock = false;
     }
 }
 
@@ -211,6 +227,10 @@ void ScManager::UpdateWarnState(void)
             {
                 shareData.output.warn.warn_u32 |= (1 << i);
             }
+			else
+			{
+				shareData.output.warn.warn_u32 &= ~(1 << i);
+			}
             if(tmp->IsLocked())
             {
                 //sharedData.output.state.status_bit.defect = 1;
@@ -221,14 +241,26 @@ void ScManager::UpdateWarnState(void)
     }
 }
 
+
 void ScManager::SlowCheck(void)
 {
 	MonitorCheckSlow();
+	
+	RefreshWarnList();
+	RefreshFaultList();
+	
 	UpdateFaultState();
 	UpdateWarnState();
 }
 
 void ScManager::MonitorCheckSlow(void)
 {
-	
+	if (shareData.status.status_bit.CanFault)
+	{
+		canTimeOutWarn.OccurNow();
+	}
+	else
+	{
+		canTimeOutWarn.OccurStop();
+	}
 }

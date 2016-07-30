@@ -7,6 +7,7 @@
 #include "can_app_def.h"
 #include "ScManagerExtern.h"
 #include "ScManager.h"
+#include "DataStruct.h"
 extern CanApp can;
 
 /****************************************************************
@@ -70,6 +71,8 @@ CanApp::CanApp(void)
 	_std_msg = _std_msg_table;
 	
 	CanStateWord = 0x000F;
+	
+	canOffTime = 200;
 }
 
 /****************************************************************
@@ -574,7 +577,7 @@ void gbch_init(void)
 {
     can_services_init();
     can_rx_thread_init();
-	can_tx_thread_init();
+	can_thread_init();
 
 	//---------------------------------------------------------------
 	// 打开CAN控制器中断
@@ -586,4 +589,67 @@ void gbch_init(void)
 #if(BSP_USE_CAN2 == 1)
 	CAN_ITConfig(CAN2, CAN_IT_FMP0, ENABLE);
 #endif
+}
+
+void can_led(void)
+{
+	if(can.CanStateWord > 0)
+	{
+		stm32_hw_io_toggle(1);
+	}
+	else
+	{
+		stm32_hw_io_off(1);
+	}
+}
+
+/*******************************************************************************
+* Function Name  :  
+* Description    :
+*
+*
+* Input          : None
+* Output         : None
+* Return         : None
+*******************************************************************************/
+void can_fault(void)
+{
+	ScData * p = (ScData *)GetShareDataPtr();
+	uint8_t portScan = 0;
+	//------------------------------------------------------
+	// 持续没有CAN没有接收到数据，判断CAN通讯丢失
+	//------------------------------------------------------
+	for(portScan = 0; portScan < 6; portScan++)
+	{
+		can.CanFltCnt[portScan]++;
+
+		if(can.CanFltCnt[portScan] >= can.canOffTime)
+		{
+			can.CanFltCnt[portScan] = can.canOffTime;
+			//-----------------------------------------------------
+			// CAN接收1异常
+			//-----------------------------------------------------
+			can.CanStateWord &= ~(uint16_t)(0x0001 << portScan);
+		}
+		else
+		{
+			//-----------------------------------------------------
+			// CAN接收1正常
+			//-----------------------------------------------------
+			can.CanStateWord |= (uint16_t)(0x0001 << portScan);
+		}
+	}
+	
+	p->status.status_bit.AdFault = (~can.CanStateWord) & 0x0020;
+	can.CanCnt ++;
+	
+	if (can.CanCnt >= can.canOffTime)
+	{
+		can.CanCnt = can.canOffTime;
+		p->status.status_bit.CanFault = 1; 
+	}
+	else
+	{
+		p->status.status_bit.CanFault = 0;
+	}
 }

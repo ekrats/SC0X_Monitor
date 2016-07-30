@@ -6,8 +6,8 @@
 static u32 s_rx_timeout_flag = 0;
 //-----------------------静态信号量及线程空间------------------------------------
 //ALIGN(RT_ALIGN_SIZE)
-static struct rt_thread can_tx_thread;
-static rt_uint8_t can_tx_thread_stack[CAN_TX_THREAD_STACK];
+static struct rt_thread can_thread;
+static rt_uint8_t can_thread_stack[CAN_THREAD_STACK];
 static struct rt_thread can1_rx_thread;
 static rt_uint8_t can1_rx_thread_stack[CAN_RX_THREAD_STACK];
 static struct rt_thread can2_rx_thread;
@@ -96,75 +96,6 @@ static void Bsp_can_event_init(void)
 	_ev_cansend_init = rt_event_init(&EventCanSend, "E_Can", RT_IPC_FLAG_FIFO);
 }
 
-//static void Bsp_can_led(void)
-//{
-//	if(can.CanStateWord > 0)
-//	{
-//		if(GPIOA->ODR & GPIO_Pin_11)
-//		{
-//			GPIOA->BSRRH = GPIO_Pin_11;//LED2
-//		}
-//		else
-//		{
-//			GPIOA->BSRRL = GPIO_Pin_11;
-//		}
-//	}
-//	else
-//	{
-//		GPIOA->BSRRL  = GPIO_Pin_11;
-//	}
-//}
-
-/*******************************************************************************
-* Function Name  :  
-* Description    :
-*
-*
-* Input          : None
-* Output         : None
-* Return         : None
-*******************************************************************************/
-//static void Bsp_can_fault(void)
-//{
-//	uint8_t portScan = 0;
-//	//------------------------------------------------------
-//	// 持续没有CAN没有接收到数据，判断CAN通讯丢失
-//	//------------------------------------------------------
-//	for(portScan = 0; portScan < 6; portScan++)
-//	{
-//		can.CanFltCnt[portScan]++;
-
-//		if(can.CanFltCnt[portScan] >= CAN_RX_TIME)
-//		{
-//			can.CanFltCnt[portScan] = CAN_RX_TIME;
-//			//-----------------------------------------------------
-//			// CAN接收1异常
-//			//-----------------------------------------------------
-//			can.CanStateWord &= ~(uint16_t)(0x0001 << portScan);
-//		}
-//		else
-//		{
-//			//-----------------------------------------------------
-//			// CAN接收1正常
-//			//-----------------------------------------------------
-//			can.CanStateWord |= (uint16_t)(0x0001 << portScan);
-//		}
-//	}
-//	
-//	MB_LGA.MB_SYS_INFO.AdFault = (~can.CanStateWord) & 0x0020;
-//	can.CanCnt ++;
-//	
-//	if (can.CanCnt >= CAN_RX_TIME)
-//	{
-//		can.CanCnt = CAN_RX_TIME;
-//		MB_LGA.MB_SYS_INFO.CanFault = 1; 
-//	}
-//	else
-//	{
-//		MB_LGA.MB_SYS_INFO.CanFault = 0;
-//	}
-//}
-
 //================================================================
 //Function Name: 
 //Description  :can发送线程入口程序
@@ -172,7 +103,7 @@ static void Bsp_can_event_init(void)
 //Output       : 
 //Return       : 
 //================================================================
-static void can_tx_thread_entry(void* parameter)
+static void can_thread_entry(void* parameter)
 {
     static uint8_t timeDelay = 0;
 	
@@ -195,14 +126,14 @@ static void can_tx_thread_entry(void* parameter)
 			//-----------------------------------------------------
 			// can故障判断
 			//-----------------------------------------------------
-			//Bsp_can_fault();
+			can_fault();
 			//-----------------------------------------------------
 			// can指示灯
 			//-----------------------------------------------------
 			if(++timeDelay % 50 == 0)
 			{
 				timeDelay = 0;
-				//Bsp_can_led();
+				can_led();
 			}
 		}
 		//------------------------------------------------------
@@ -225,18 +156,18 @@ static void can_tx_thread_entry(void* parameter)
 //Output       : 
 //Return       : 
 //================================================================
-void can_tx_thread_init(void)
+void can_thread_init(void)
 {
     rt_err_t result;
 	
 	Bsp_can_event_init();
 	
-    result = rt_thread_init(&can_tx_thread, "can_s_tx", can_tx_thread_entry,
-        RT_NULL, &can_tx_thread_stack[0],
-        sizeof(can_tx_thread_stack), CAN_TX_THREAD_PRI, CAN_TX_THREAD_SLICE);
+    result = rt_thread_init(&can_thread, "can_s_tx", can_thread_entry,
+        RT_NULL, &can_thread_stack[0],
+        sizeof(can_thread_stack), CAN_THREAD_PRI, CAN_THREAD_SLICE);
     if (result == RT_EOK)
     {
-        rt_thread_startup(&can_tx_thread);//启动线程
+        rt_thread_startup(&can_thread);//启动线程
     }
     else
     {

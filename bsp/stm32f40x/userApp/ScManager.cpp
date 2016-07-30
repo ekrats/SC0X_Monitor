@@ -17,7 +17,9 @@ CbMode	Cb5Mode;
 
 void ScManager::RelayRun(void)
 {
-    relays.Refresh();
+    //relays.Refresh();
+	WarnRelayRun();
+	FaultRelayRun();
 	ContactRelayRun();
 }
 
@@ -33,6 +35,8 @@ void module_init(void)
 
 void ScManager::Init(void)
 {
+	FaultCheckModuleInit();
+	
 	module_init();
 	
 	sc.sysMode = &SysMode;
@@ -135,7 +139,6 @@ void ScManager::MonitorStatusUpdata(void)
 	p->In_Flags.outFuse4N = sc.shareData.input.io.in_32.outFuse4;
 	p->In_Flags.outFuse5N = sc.shareData.input.io.in_32.outFuse5;
 	
-	
 }
 
 void ScManager::UpdateCbState(void)
@@ -195,6 +198,26 @@ void ScManager::ContactRelayRun(void)
 	while ((tmp = ContactList.Next()) != NULL)
     {
         tmp->Refresh();
+    }
+}
+
+void ScManager::WarnRelayRun(void)
+{
+	warnList.Begin();
+	ScFailure * tmp = NULL;
+	while ((tmp = warnList.Next()) != NULL)
+    {
+        tmp->RefreshRelays();
+    }
+}
+
+void ScManager::FaultRelayRun(void)
+{
+	failureList.Begin();
+	ScFailure * tmp = NULL;
+	while ((tmp = failureList.Next()) != NULL)
+    {
+        tmp->RefreshRelays();
     }
 }
 

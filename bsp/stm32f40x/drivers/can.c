@@ -369,9 +369,6 @@ static void can_tx_services_entry( void* parameter)
             
             while(retry_times--)
             {
-                tx_info->data.ExtId = 0;
-                tx_info->data.IDE = CAN_ID_STD;
-                tx_info->data.RTR = CAN_RTR_DATA;
                 send_cnt++;
                 transmit_mailbox = CAN_Transmit(tx_info->CANx, &tx_info->data);
                 if(CAN_TxStatus_NoMailBox == transmit_mailbox)//发送队列已满
@@ -406,7 +403,7 @@ void can_services_init()
                                     1024, 15, 10);
     if (can_services_thread != RT_NULL)
     {
-        //rt_thread_startup(can_services_thread);
+        rt_thread_startup(can_services_thread);
     }
 
     //rt_sem_init(&sem_serial_rx, "usart_rx", 0, 1);
@@ -465,19 +462,8 @@ uint32_t can_send_buffer(uint8_t port, CanTxMsg* msg)
 	if(tx_buffer != RT_NULL)
 	{
 		tx_buffer->header.port = port;
-		tx_buffer->data.StdId = msg->StdId;
-		tx_buffer->data.ExtId = msg->ExtId;
-		tx_buffer->data.IDE = msg->IDE;
-		tx_buffer->data.RTR = msg->RTR;
-		tx_buffer->data.DLC = msg->DLC;
-		tx_buffer->data.Data[0] = tmp[0];
-		tx_buffer->data.Data[1] = tmp[1];
-		tx_buffer->data.Data[2] = tmp[2];
-		tx_buffer->data.Data[3] = tmp[3];
-		tx_buffer->data.Data[4] = tmp[4];
-		tx_buffer->data.Data[5] = tmp[5];
-		tx_buffer->data.Data[6] = tmp[6];
-		tx_buffer->data.Data[7] = tmp[7];
+		tx_buffer->data = *msg;
+		tx_buffer->CANx = port == 1 ? CAN1 : CAN2;
 		rt_mb_send(&mb_can_tx, (rt_uint32_t)tx_buffer);
 	}
 	else

@@ -5,6 +5,7 @@
 #include "canApp.h"
 #include "appMonitor.h"
 #include "appModule.h"
+#include "ScFailure.h"
 
 class ScManager : public Sc
 {
@@ -33,8 +34,8 @@ public:
 		
 private:
 	List <CbMode *> cbModelist;
-	List<Failure*> warnList;
-	List<Failure*> failureList;
+	List<ScFailure *> warnList;
+	List<ScFailure *> failureList;
 	CanApp *can;
 	System_Mode *sysMode;
 	CbMode *cb1Mode;
@@ -43,9 +44,13 @@ private:
 	CbMode *cb4Mode;
 	CbMode *cb5Mode;
 
-	RelayModule relays;
+	//RelayModule relays;
 	Relay systemResetRelay;
-
+	
+	void WarnRelayRun(void);
+	void FaultRelayRun(void);
+	void RefreshWarnList(void);
+	void RefreshFaultList(void);
 	void UpdateFaultState(void);
 	void UpdateWarnState(void);
     

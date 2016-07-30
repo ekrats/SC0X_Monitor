@@ -12,6 +12,8 @@
 class Sc
 {
 public:
+	ScData shareData;
+public:
     Sc(void);
     ~Sc(void)
     {
@@ -53,6 +55,4 @@ public:
 	Contactor	outCon4;
 	Contactor	outCon5;
 	
-public:
-	ScData shareData;
 };

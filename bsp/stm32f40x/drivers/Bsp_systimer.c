@@ -46,14 +46,14 @@ static void NVIC_Configuration(void);
 void TIM4_IRQHandler(void)
 {
 	static uint8_t cnt1 = 0;
-	static uint8_t cnt2 = 0;
+//	static uint8_t cnt2 = 0;
 	
 	/* enter interrupt */
 	rt_interrupt_enter();
 	
 	TIM_ClearITPendingBit(BSP_TIM, TIM_IT_Update);
 
-	if((cnt1++ % 50) == 0)
+	if((cnt1++ % 5) == 0)
 	{
 		rt_sem_release(&sem_adio_task);
 		Bsp_can_send_cycle_event();
