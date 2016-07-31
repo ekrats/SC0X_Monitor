@@ -1,5 +1,4 @@
 #include "appMonitor.h"
-
 #include "stm32f4xx.h"
 #include <rtthread.h>
 #include "logicApp.h"
@@ -7,8 +6,8 @@
 
 System_Mode::System_Mode(void)
 {
-//	state = SYS_STATE_STOP;
-//	outputMode = SYS_OUT_STOP;
+	state = SYS_STATE_STOP;
+	outputMode = SYS_OUT_STOP;
 }
 
 void System_Mode::ChargeModeManage(void)
@@ -194,63 +193,54 @@ void System_Mode::ChargeModeManage(void)
 			
 	}
 }
-/*
+
 void System_Mode::StopCal(void)
 {
-	if (MB_LGA.cb1_SYS.input.Charging == false && MB_LGA.cb2_SYS.input.Charging == false
-	 && MB_LGA.cb3_SYS.input.Charging == false && MB_LGA.cb4_SYS.input.Charging == false
-	 && MB_LGA.cb5_SYS.input.Charging == false)
+	if (scData->hmi.mbStatus.dcdc1_step == 0 && scData->hmi.mbStatus.dcdc2_step == 0
+	 && scData->hmi.mbStatus.dcdc3_step == 0 && scData->hmi.mbStatus.dcdc4_step == 0
+	 && scData->hmi.mbStatus.dcdc5_step == 0)
 	 {
-		MB_LGA.MB_IO_OUT.mainCon1N = false;
-		MB_LGA.MB_IO_OUT.mainCon2N = false;
-		MB_LGA.MB_IO_OUT.preConN = false;
-		MB_LGA.MB_IO_OUT.outCon1N = false;
-		MB_LGA.MB_IO_OUT.outCon2N = false;
-		MB_LGA.MB_IO_OUT.outCon3N = false;
-		MB_LGA.MB_IO_OUT.outCon4N = false;
-		MB_LGA.MB_IO_OUT.outCon5N = false;
+		scData->output.io.out_32.mainCon1 = false;
+		scData->output.io.out_32.mainCon2 = false;
+		scData->output.io.out_32.preCon = false;
+		scData->output.io.out_32.outCon1 = false;
+		scData->output.io.out_32.outCon2 = false;
+		scData->output.io.out_32.outCon3 = false;
+		scData->output.io.out_32.outCon4 = false;
+		scData->output.io.out_32.outCon5 = false;
 	 }
-	 
-	PreDelayCnt = PRE_CHARGE_DELAY1;
-	PreDelay2Cnt = PRE_CHARGE_DELAY2;
 }
 
 void System_Mode::PreChargeCal(void)
 {
-	MB_LGA.MB_IO_OUT.mainCon1N = false;
-	MB_LGA.MB_IO_OUT.mainCon2N = false;
-	MB_LGA.MB_IO_OUT.preConN = true;
-	MB_LGA.MB_IO_OUT.outCon1N = false;
-	MB_LGA.MB_IO_OUT.outCon2N = false;
-	MB_LGA.MB_IO_OUT.outCon3N = false;
-	MB_LGA.MB_IO_OUT.outCon4N = false;
-	MB_LGA.MB_IO_OUT.outCon5N = false;
+	scData->output.io.out_32.mainCon1 = false;
+	scData->output.io.out_32.mainCon2 = false;
+	scData->output.io.out_32.preCon = true;
+	scData->output.io.out_32.outCon1 = false;
+	scData->output.io.out_32.outCon2 = false;
+	scData->output.io.out_32.outCon3 = false;
+	scData->output.io.out_32.outCon4 = false;
+	scData->output.io.out_32.outCon5 = false;
 	
 	//预充电第一阶段开始
-	this->PreChargeStep1 = true;
+	PreChargeStep1 = true;
 	
-	if(PreDelayCnt > 0)
+	preStep1Relay->Start();
+	if (preStep1Relay->GetResult())
 	{
-		PreDelayCnt --;
-	}
-	else
-	{
-		this->PreChargeStep2 = true;
-		if (MB_LGA.MB_SYS_INFO.busVoltOK)
+		PreChargeStep2 = true;
+		if (scData->status.status_bit.busVoltOK)
 		{
-			MB_LGA.MB_IO_OUT.mainCon1N = true;
-			if (PreDelay2Cnt > 0)
+			scData->output.io.out_32.mainCon1 = true;
+			preStep2Relay->Start();
+			if (preStep2Relay->GetResult())
 			{
-				PreDelay2Cnt --;
-			}
-			else
-			{
-				MB_LGA.MB_IO_OUT.mainCon2N = true;
-				MB_LGA.MB_IO_OUT.preConN = false;
+				scData->output.io.out_32.mainCon2 = true;
+				scData->output.io.out_32.preCon = false;
 				
-				this->PreFinsh = true;
-				PreDelayCnt = PRE_CHARGE_DELAY1;
-				PreDelay2Cnt = PRE_CHARGE_DELAY2;
+				PreFinsh = true;
+				preStep1Relay->Stop();
+				preStep2Relay->Stop();
 			}
 		}
 	}
@@ -258,117 +248,117 @@ void System_Mode::PreChargeCal(void)
 
 void System_Mode::StandbyCal(void)
 {
-	MB_LGA.MB_IO_OUT.mainCon1N = true;
-	MB_LGA.MB_IO_OUT.mainCon2N = true;
-	MB_LGA.MB_IO_OUT.preConN = false;
+	scData->output.io.out_32.mainCon1 = true;
+	scData->output.io.out_32.mainCon2 = true;
+	scData->output.io.out_32.preCon = false;
 	
-	PreDelayCnt = PRE_CHARGE_DELAY1;
-	PreDelay2Cnt = PRE_CHARGE_DELAY2;
+	preStep1Relay->Stop();
+	preStep2Relay->Stop();
 }
 
 void System_Mode::FaultCal(void)
 {
-	if (MB_LGA.cb1_SYS.input.Charging == false && MB_LGA.cb2_SYS.input.Charging == false
-	 && MB_LGA.cb3_SYS.input.Charging == false && MB_LGA.cb4_SYS.input.Charging == false
-	 && MB_LGA.cb5_SYS.input.Charging == false)
+	if (scData->hmi.mbStatus.dcdc1_step == 0 && scData->hmi.mbStatus.dcdc2_step == 0
+	 && scData->hmi.mbStatus.dcdc3_step == 0 && scData->hmi.mbStatus.dcdc4_step == 0
+	 && scData->hmi.mbStatus.dcdc5_step == 0)
 	 {
-		MB_LGA.MB_IO_OUT.mainCon1N = false;
-		MB_LGA.MB_IO_OUT.mainCon2N = false;
-		MB_LGA.MB_IO_OUT.preConN = false;
-		MB_LGA.MB_IO_OUT.outCon1N = false;
-		MB_LGA.MB_IO_OUT.outCon2N = false;
-		MB_LGA.MB_IO_OUT.outCon3N = false;
-		MB_LGA.MB_IO_OUT.outCon4N = false;
-		MB_LGA.MB_IO_OUT.outCon5N = false;
+		scData->output.io.out_32.mainCon1 = false;
+		scData->output.io.out_32.mainCon2 = false;
+		scData->output.io.out_32.preCon = false;
+		scData->output.io.out_32.outCon1 = false;
+		scData->output.io.out_32.outCon2 = false;
+		scData->output.io.out_32.outCon3 = false;
+		scData->output.io.out_32.outCon4 = false;
+		scData->output.io.out_32.outCon5 = false;
 	 }
 	 
-	PreDelayCnt = PRE_CHARGE_DELAY1;
-	PreDelay2Cnt = PRE_CHARGE_DELAY2;
+	preStep1Relay->Stop();
+	preStep2Relay->Stop();
 }
 
 void System_Mode::DevTestCal(void)
 {
 	uint16_t DevTestCmd;
-	DevTestCmd = MB_LGA.CtrCmd.DevTestCmd;
+	DevTestCmd = scData->hmi.CtrCmd.DevTestCmd;
 	
 	if (DevTestCmd & (0x0001 << 0))
 	{
-		MB_LGA.MB_IO_OUT.preConN = true;
+		scData->output.io.out_32.preCon = true;
 	}
 	else
 	{
-		MB_LGA.MB_IO_OUT.preConN = false;
+		scData->output.io.out_32.preCon = false;
 	}
 	if (DevTestCmd & (0x0001 << 1))
 	{
-		MB_LGA.MB_IO_OUT.mainCon1N = true;
+		scData->output.io.out_32.mainCon1 = true;
 	}
 	else
 	{
-		MB_LGA.MB_IO_OUT.mainCon1N = false;
+		scData->output.io.out_32.mainCon1 = false;
 	}
 	if (DevTestCmd & (0x0001 << 2))
 	{
-		MB_LGA.MB_IO_OUT.mainCon2N = true;
+		scData->output.io.out_32.mainCon2 = true;
 	}
 	else
 	{
-		MB_LGA.MB_IO_OUT.mainCon2N = false;
+		scData->output.io.out_32.mainCon2 = false;
 	}
 	if (DevTestCmd & (0x0001 << 3))
 	{
-		MB_LGA.MB_IO_OUT.outCon1N = true;
+		scData->output.io.out_32.outCon1 = true;
 	}
 	else
 	{
-		MB_LGA.MB_IO_OUT.outCon1N = false;
+		scData->output.io.out_32.outCon1 = false;
 	}
 	if (DevTestCmd & (0x0001 << 4))
 	{
-		MB_LGA.MB_IO_OUT.outCon2N = true;
+		scData->output.io.out_32.outCon2 = true;
 	}
 	else
 	{
-		MB_LGA.MB_IO_OUT.outCon2N = false;
+		scData->output.io.out_32.outCon2 = false;
 	}
 	if (DevTestCmd & (0x0001 << 5))
 	{
-		MB_LGA.MB_IO_OUT.outCon3N = true;
+		scData->output.io.out_32.outCon3 = true;
 	}
 	else
 	{
-		MB_LGA.MB_IO_OUT.outCon3N = false;
+		scData->output.io.out_32.outCon3 = false;
 	}
 	if (DevTestCmd & (0x0001 << 6))
 	{
-		MB_LGA.MB_IO_OUT.outCon4N = true;
+		scData->output.io.out_32.outCon4 = true;
 	}
 	else
 	{
-		MB_LGA.MB_IO_OUT.outCon4N = false;
+		scData->output.io.out_32.outCon4 = false;
 	}
 	if (DevTestCmd & (0x0001 << 7))
 	{
-		MB_LGA.MB_IO_OUT.outCon5N = true;
+		scData->output.io.out_32.outCon5 = true;
 	}
 	else
 	{
-		MB_LGA.MB_IO_OUT.outCon5N = false;
+		scData->output.io.out_32.outCon5 = false;
 	}
-	PreDelayCnt = PRE_CHARGE_DELAY1;
-	PreDelay2Cnt = PRE_CHARGE_DELAY2;
+	preStep1Relay->Stop();
+	preStep2Relay->Stop();
 }
 
 void System_Mode::SleepCal(void)
 {
 	__NOP();
-	PreDelayCnt = PRE_CHARGE_DELAY1;
-	PreDelay2Cnt = PRE_CHARGE_DELAY2;
+	preStep1Relay->Stop();
+	preStep2Relay->Stop();
 }
 
 void System_Mode::System_Output(void)
 {
-	switch (this->SystemOutput)
+	switch (outputMode)
 	{
 		//停机态
 		case SYS_OUT_STOP:
@@ -398,9 +388,10 @@ void System_Mode::System_Output(void)
 			break;
 	}
 }
-*/
+
 
 void System_Mode::Run(void)
 {
 	ChargeModeManage();
+	System_Output();
 }

@@ -1,6 +1,7 @@
 #include "appModule.h"
 #include "stm32f4xx.h"
 #include <rtthread.h>
+#include "ScManagerExtern.h"
 
 
 void CbMode::ModuleManage(void)
@@ -111,23 +112,23 @@ void CbMode::CB_Idle_Cal(void)
 	if (Charging == true)
 	{
 		chargeCmd = 0;
-		//can.SendCan(canIndex);
+		SendCan(canIndex);
 	}
-	//startDelay = CHARGE_START_T;
-	//floatDelay = CHARGE_FLOAT_T;
+	startDelay->Stop();
+	floatDelay->Stop();
 }
 
 void CbMode::CB_Manual_Cal(void)
 {
 	if (Charging != true)
 	{
-		chargeCmd = 1;
-		//can.SendCan(canIndex);
+		*chargeCmd = 1;
+		SendCan(canIndex);
 		return ;
 	}
-	chargeCmd = 1;
-	//startDelay = CHARGE_START_T;
-	//floatDelay = CHARGE_FLOAT_T;
+	*chargeCmd = 1;
+	startDelay->Stop();
+	floatDelay->Stop();
 }
 
 void CbMode::CB_Standby_Cal(void)
@@ -135,11 +136,11 @@ void CbMode::CB_Standby_Cal(void)
 	if (Charging == true)
 	{
 		chargeCmd = 0;
-		//can.SendCan(canIndex);
+		SendCan(canIndex);
 	}
 	chargeCmd = 0;
-	//startDelay = CHARGE_START_T;
-	//floatDelay = CHARGE_FLOAT_T;
+	startDelay->Stop();
+	floatDelay->Stop();
 }
 
 void CbMode::CB_Auto_Cal(void)
@@ -150,28 +151,23 @@ void CbMode::CB_Auto_Cal(void)
 		 && !chargeComplet)
 		{
 			//delay
-//			if (startDelay > 0)
-//			{
-//				startDelay--;
-//			}
-//			else
-//			{
-//				chargeCmd = 1;
-//				//can.SendCan(canIndex);
-//			}
+			startDelay->Start();
+			if (startDelay->GetResult())
+			{
+				*chargeCmd = 1;
+				SendCan(canIndex);
+			}
 		}
 		else if (floatCharge)
 		{
 			//delay
-//			if (floatDelay > 0)
-//			{
-//				floatDelay--;
-//			}
-//			else
-//			{
-//				chargeCmd = 0;
-//				can.SendCan(canIndex);
-//			}
+			floatDelay->Start();
+			if (floatDelay->GetResult())
+			{
+				chargeCmd = 0;
+				chargeComplet = true;
+				SendCan(canIndex);
+			}
 		}
 	}
 	else
@@ -179,11 +175,12 @@ void CbMode::CB_Auto_Cal(void)
 		if (Charging == true)
 		{
 			chargeCmd = 0;
-			//can.SendCan(canIndex);
+			SendCan(canIndex);
 		}
 		chargeCmd = 0;
-//		startDelay = CHARGE_START_T;
-//		floatDelay = CHARGE_FLOAT_T;
+		chargeComplet = false;
+		startDelay->Stop();
+		floatDelay->Stop();
 	}
 }
 
@@ -192,10 +189,10 @@ void CbMode::CB_Fault_Cal(void)
 	if (Charging == true)
 	{
 		chargeCmd = 0;
-		//can.SendCan(canIndex);
+		SendCan(canIndex);
 	}
-//	startDelay = CHARGE_START_T;
-//	floatDelay = CHARGE_FLOAT_T;
+	startDelay->Stop();
+	floatDelay->Stop();
 }
 
 void CbMode::OutputManage(void)

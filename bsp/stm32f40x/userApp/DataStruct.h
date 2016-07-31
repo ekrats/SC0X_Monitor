@@ -5,6 +5,27 @@
 #include "hmi_def.h"
 #include "can_app_def.h"
 
+#define FanIn_Temp_Over					85
+#define FanOut_Temp_Over				85
+
+#define CHARGE_BASE_T						10//ms
+#define PRE_CHARGE_DELAY1			(60000/CHARGE_BASE_T)//‘§≥‰µÁ ±º‰
+#define PRE_CHARGE_DELAY2			(500/CHARGE_BASE_T)
+
+#define SYS_STATE_STOP			    0x0000
+#define SYS_STATE_PRECHARGE			0x0100
+#define SYS_STATE_STANDBY			0x0200
+#define SYS_STATE_FAULT				0x0300
+#define SYS_STATE_TEST				0x0400
+#define SYS_STATE_SLEEP				0x0500
+
+#define SYS_OUT_STOP			    0x1000
+#define SYS_OUT_PRECHARGE			0x2000
+#define SYS_OUT_STANDBY				0x3000
+#define SYS_OUT_FAULT				0x4000
+#define SYS_OUT_TEST				0x5000
+#define SYS_OUT_SLEEP 				0x6000
+
 enum _io_input_index_{
 	cabinetN,
 	inFuse1N,
@@ -75,17 +96,17 @@ typedef union _io_input_{
 }io_input_type;
 
 typedef struct{
-	uint16_t i_in1;
-	uint16_t i_in2;
-	uint16_t temp_module1;
-	uint16_t temp_module2;
-	uint16_t temp_in;
-	uint16_t temp_out;
-	uint16_t temp_cap1;
-	uint16_t temp_cap2;
-	uint16_t u_ac1;
-	uint16_t u_ac2;
-	uint16_t u_bus;
+	int i_in1;
+	int i_in2;
+	int temp_module1;
+	int temp_module2;
+	int temp_in;
+	int temp_out;
+	int temp_cap1;
+	int temp_cap2;
+	int u_ac1;
+	int u_ac2;
+	int u_bus;
 }ad_data_type;
 
 typedef struct{

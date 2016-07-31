@@ -44,7 +44,7 @@ private:
 	CbMode *cb4Mode;
 	CbMode *cb5Mode;
 
-	//RelayModule relays;
+	RelayModule relays;
 	Relay systemResetRelay;
 	
 	void WarnRelayRun(void);

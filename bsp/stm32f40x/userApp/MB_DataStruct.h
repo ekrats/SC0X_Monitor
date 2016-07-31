@@ -3,6 +3,36 @@
 //#include "stm32f4xx.h"
 #include "stm32f4xx.h"
 
+#define CB_STATE_IDLE				0x0000
+#define CB_STATE_MANUAL				0x0010
+#define CB_STATE_AUTO				0x0020
+#define CB_STATE_FAULT				0x0030
+
+#define CB_OUT_IDLE					0x0000
+#define CB_OUT_MANUAL				0x0001
+#define CB_OUT_STANDY				0x0002
+#define CB_OUT_AUTO					0x0003
+#define CB_OUT_FAULT				0x0004
+
+#define CHARGE_BASE_T						10//ms
+
+#define CHARGE_START_T						(2000/CHARGE_BASE_T)//启动时间
+#define CHARGE_FLOAT_T						(5000/CHARGE_BASE_T)//恒压时间
+
+enum{
+	CB_STANDBY,
+	CB_MANUAL,
+	CB_AUTO,
+	CB_FAULT,
+};
+
+enum{
+	CHARGE_MODE_NONE,
+	CHARGE_MODE_AUTO,
+	CHARGE_MODE_MANUAL,
+	CHARGE_MODE_STANDBY,
+};
+
 typedef struct {
 	u8 year;
 	u8 month;

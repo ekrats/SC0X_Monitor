@@ -1,4 +1,5 @@
 #include "ScManager.h"
+#include "DataStruct.h"
 
 static ScFailure canTimeOutWarn(36,200,200);
 static ScFailure adTimeOutWarn(3,200,200);
@@ -255,6 +256,7 @@ void ScManager::SlowCheck(void)
 
 void ScManager::MonitorCheckSlow(void)
 {
+	//can掉线
 	if (shareData.status.status_bit.CanFault)
 	{
 		canTimeOutWarn.OccurNow();
@@ -263,4 +265,320 @@ void ScManager::MonitorCheckSlow(void)
 	{
 		canTimeOutWarn.OccurStop();
 	}
+	//AD板掉线
+	if (shareData.status.status_bit.AdFault)
+	{
+		adTimeOutWarn.OccurNow();
+	}
+	else
+	{
+		adTimeOutWarn.OccurStop();
+	}
+	//进风口温度
+	if (shareData.input.ad.temp_in > 85)
+	{
+		fanInTempOverWarn.OccurNow();
+	}
+	else
+	{
+		fanInTempOverWarn.OccurStop();
+	}
+	//出风口温度
+	if (shareData.input.ad.temp_out > 85)
+	{
+		fanOutTempOverWarn.OccurNow();
+	}
+	else
+	{
+		fanOutTempOverWarn.OccurStop();
+	}
+	//进风口温度传感器故障
+	if (shareData.input.ad.temp_in < -40 || shareData.input.ad.temp_in > 120)
+	{
+		fanInSensorFailWarn.OccurNow();
+	}
+	else
+	{
+		fanInSensorFailWarn.OccurStop();
+	}
+	//出风口温度传感器故障
+	if (shareData.input.ad.temp_out < -40 || shareData.input.ad.temp_out > 120)
+	{
+		fanOutSensorFailWarn.OccurNow();
+	}
+	else
+	{
+		fanOutSensorFailWarn.OccurStop();
+	}
+	//1#整流模块传感器故障
+	if (shareData.input.ad.temp_module1 < -40 || shareData.input.ad.temp_module1 > 120)
+	{
+		acModule1SensorFailWarn.OccurNow();
+	}
+	else
+	{
+		acModule1SensorFailWarn.OccurStop();
+	}
+	//2#整流模块传感器故障
+	if (shareData.input.ad.temp_module2 < -40 || shareData.input.ad.temp_module2 > 120)
+	{
+		acModule2SensorFailWarn.OccurNow();
+	}
+	else
+	{
+		acModule2SensorFailWarn.OccurStop();
+	}
+	//1#电容模块温度传感器故障
+	if (shareData.input.ad.temp_cap1 < -40 || shareData.input.ad.temp_cap1 > 120)
+	{
+		cap1SensorFailWarn.OccurNow();
+	}
+	else
+	{
+		cap1SensorFailWarn.OccurStop();
+	}
+	//2#电容模块温度传感器故障
+	if (shareData.input.ad.temp_cap2 < -40 || shareData.input.ad.temp_cap2 > 120)
+	{
+		cap2SensorFailWarn.OccurNow();
+	}
+	else
+	{
+		cap2SensorFailWarn.OccurStop();
+	}
+	//预充电接触器反馈故障
+	if (preCon.IsFault())
+	{
+		preConFeedbackWarn.OccurNow();
+	}
+	else
+	{
+		preConFeedbackWarn.OccurStop();
+	}
+	//1#主接触器反馈故障
+	if (mainCon1.IsFault())
+	{
+		main1ConFeedbackWarn.OccurNow();
+	}
+	else
+	{
+		main1ConFeedbackWarn.OccurStop();
+	}
+	//2#主接触器反馈故障
+	if (mainCon2.IsFault())
+	{
+		main2ConFeedbackWarn.OccurNow();
+	}
+	else
+	{
+		main2ConFeedbackWarn.OccurStop();
+	}
+	//1#输出接触器反馈故障
+	if (outCon1.IsFault())
+	{
+		out1ConFeedbackWarn.OccurNow();
+	}
+	else
+	{
+		out1ConFeedbackWarn.OccurStop();
+	}
+	//2#输出接触器反馈故障
+	if (outCon2.IsFault())
+	{
+		out2ConFeedbackWarn.OccurNow();
+	}
+	else
+	{
+		out2ConFeedbackWarn.OccurStop();
+	}
+	//3#输出接触器反馈故障
+	if (outCon3.IsFault())
+	{
+		out3ConFeedbackWarn.OccurNow();
+	}
+	else
+	{
+		out3ConFeedbackWarn.OccurStop();
+	}
+	//4#输出接触器反馈故障
+	if (outCon4.IsFault())
+	{
+		out4ConFeedbackWarn.OccurNow();
+	}
+	else
+	{
+		out4ConFeedbackWarn.OccurStop();
+	}
+	//5#输出接触器反馈故障
+	if (outCon5.IsFault())
+	{
+		out5ConFeedbackWarn.OccurNow();
+	}
+	else
+	{
+		out5ConFeedbackWarn.OccurStop();
+	}
+	//1#交流电压传感器故障
+	if (shareData.input.ad.u_ac1 > 20000 || (shareData.status.status_bit.busConnect && (shareData.input.ad.u_ac1 < 500) 
+		&& (shareData.input.ad.u_bus > 1000)))
+	{
+		ac1SensorFailWarn.OccurNow();
+	}
+	else
+	{
+		ac1SensorFailWarn.OccurStop();
+	}
+	//2#交流电压传感器故障
+	if (shareData.input.ad.u_ac2 > 20000 
+		|| (shareData.status.status_bit.busConnect && (shareData.input.ad.u_ac2 < 500) 
+		&& (shareData.input.ad.u_bus > 1000)))
+	{
+		ac2SensorFailWarn.OccurNow();
+	}
+	else
+	{
+		ac2SensorFailWarn.OccurStop();
+	}
+	//母线电压传感器故障
+	if (shareData.input.ad.u_bus > 20000
+		|| (shareData.status.status_bit.busConnect && (shareData.input.ad.u_bus < 50)
+		&& (shareData.input.ad.u_ac1 > 1000)))
+	{
+		busSensorFailWarn.OccurNow();
+	}
+	else
+	{
+		busSensorFailWarn.OccurStop();
+	}
+	//1#交流输入欠压
+	if (shareData.input.ad.u_ac1 < shareData.hmi.mbPara.ACinVoltUnderW)
+	{
+		ac1UnderWarn.OccurNow();
+	}
+	else
+	{
+		ac1UnderWarn.OccurStop();
+	}
+	//2#交流输入欠压
+	if (shareData.input.ad.u_ac2 < shareData.hmi.mbPara.ACinVoltUnderW)
+	{
+		ac2UnderWarn.OccurNow();
+	}
+	else
+	{
+		ac2UnderWarn.OccurStop();
+	}
+	//控制参数异常
+	
+	//校准参数异常
+	
+	//1#斩波模块启动失败
+	if (cb1Mode->GetpwmOnStatus())
+	{
+		dcdc1pwmOnWarn.OccurNow();
+	}
+	else
+	{
+		dcdc1pwmOnWarn.OccurStop();
+	}
+	//2#斩波模块启动失败
+	if (cb2Mode->GetpwmOnStatus())
+	{
+		dcdc2pwmOnWarn.OccurNow();
+	}
+	else
+	{
+		dcdc2pwmOnWarn.OccurStop();
+	}
+	//3#斩波模块启动失败
+	if (cb3Mode->GetpwmOnStatus())
+	{
+		dcdc3pwmOnWarn.OccurNow();
+	}
+	else
+	{
+		dcdc3pwmOnWarn.OccurStop();
+	}
+	//4#斩波模块启动失败
+	if (cb4Mode->GetpwmOnStatus())
+	{
+		dcdc4pwmOnWarn.OccurNow();
+	}
+	else
+	{
+		dcdc4pwmOnWarn.OccurStop();
+	}
+	//5#斩波模块启动失败
+	if (cb5Mode->GetpwmOnStatus())
+	{
+		dcdc5pwmOnWarn.OccurNow();
+	}
+	else
+	{
+		dcdc5pwmOnWarn.OccurStop();
+	}
+	//1#输入熔断器故障
+	if (inFuse1.GetRealValue())
+	{
+		inFuse1Fault.OccurNow();
+	}
+	else
+	{
+		inFuse1Fault.OccurStop();
+	}
+	//2#输入熔断器故障
+	if (inFuse2.GetRealValue())
+	{
+		inFuse2Fault.OccurNow();
+	}
+	else
+	{
+		inFuse2Fault.OccurStop();
+	}
+	//1#输出熔断器故障
+	if (outFuse1.GetRealValue())
+	{
+		outFuse1Fault.OccurNow();
+	}
+	else
+	{
+		outFuse1Fault.OccurStop();
+	}
+	//2#输出熔断器故障
+	if (outFuse2.GetRealValue())
+	{
+		outFuse2Fault.OccurNow();
+	}
+	else
+	{
+		outFuse2Fault.OccurStop();
+	}
+	//3#输出熔断器故障
+	if (outFuse3.GetRealValue())
+	{
+		outFuse3Fault.OccurNow();
+	}
+	else
+	{
+		outFuse3Fault.OccurStop();
+	}
+	//4#输出熔断器故障
+	if (outFuse4.GetRealValue())
+	{
+		outFuse4Fault.OccurNow();
+	}
+	else
+	{
+		outFuse4Fault.OccurStop();
+	}
+	//5#输出熔断器故障
+	if (outFuse5.GetRealValue())
+	{
+		outFuse5Fault.OccurNow();
+	}
+	else
+	{
+		outFuse5Fault.OccurStop();
+	}
+	//1#交流输入过压
 }
