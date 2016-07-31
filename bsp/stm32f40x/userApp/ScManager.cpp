@@ -149,6 +149,26 @@ void ScManager::MonitorStatusUpdata(void)
 {
 	HMI_Status_STYP *p = &sc.shareData.hmi.mbStatus;
 	
+	Cb1Mode.SetCharging(shareData.cb1Status.flags.chargeOnN);
+	Cb1Mode.SetFloatCharge(shareData.cb1Status.flags.floatChargeN);
+	Cb1Mode.SetInstation(shareData.canAppBuf.AD_RxChnn.Ch1ChargeVolt > 2000 ? true : false);
+	
+	Cb2Mode.SetCharging(shareData.cb2Status.flags.chargeOnN);
+	Cb2Mode.SetFloatCharge(shareData.cb2Status.flags.floatChargeN);
+	Cb2Mode.SetInstation(shareData.canAppBuf.AD_RxChnn.Ch2ChargeVolt > 2000 ? true : false);
+	
+	Cb3Mode.SetCharging(shareData.cb3Status.flags.chargeOnN);
+	Cb3Mode.SetFloatCharge(shareData.cb3Status.flags.floatChargeN);
+	Cb3Mode.SetInstation(shareData.canAppBuf.AD_RxChnn.Ch3ChargeVolt > 2000 ? true : false);
+	
+	Cb4Mode.SetCharging(shareData.cb4Status.flags.chargeOnN);
+	Cb4Mode.SetFloatCharge(shareData.cb4Status.flags.floatChargeN);
+	Cb4Mode.SetInstation(shareData.canAppBuf.AD_RxChnn.Ch4ChargeVolt > 2000 ? true : false);
+	
+	Cb5Mode.SetCharging(shareData.cb5Status.flags.chargeOnN);
+	Cb5Mode.SetFloatCharge(shareData.cb5Status.flags.floatChargeN);
+	Cb5Mode.SetInstation(shareData.canAppBuf.AD_RxChnn.Ch5ChargeVolt > 2000 ? true : false);
+	
 	p->sys_mode = sysMode->GetMode();
 	p->dcdc1_mode = cb1Mode->GetMode();
 	p->dcdc2_mode = cb2Mode->GetMode();
@@ -177,7 +197,7 @@ void ScManager::MonitorStatusUpdata(void)
 	p->In_Flags.outFuse3N = sc.shareData.input.io.in_32.outFuse3;
 	p->In_Flags.outFuse4N = sc.shareData.input.io.in_32.outFuse4;
 	p->In_Flags.outFuse5N = sc.shareData.input.io.in_32.outFuse5;
-	
+
 }
 
 void ScManager::UpdateCbState(void)

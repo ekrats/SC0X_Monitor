@@ -15,6 +15,19 @@ public:
 	{ chargeEnable = a; }
 	void SetCondition(bool isFine)
 	{ condition = isFine; }
+	
+	void SetInstation(bool b)
+	{
+		Instation = b;
+	}
+	void SetCharging(bool b)
+	{
+		Charging = b;
+	}
+	void SetFloatCharge(bool b)
+	{
+		floatCharge = b;
+	}
 	bool GetpwmOnStatus()
 	{
 		return pwmOnFail;

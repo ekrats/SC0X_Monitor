@@ -4,6 +4,7 @@
 #include "ScManagerExtern.h"
 #include "Bsp_Board_Init.h"
 #include "logicApp.h"
+#include "Bsp_mb_task.h"
 
 /*******************************************************************************
 * Function Name  : rt_cycle_thread_entry
@@ -67,4 +68,6 @@ void rt_app_thread_x(void)
 	adio_thread_creat(7);
 	
 	gbch_init();
+	
+	Task_MBSlave_create(10);
 }
