@@ -4,6 +4,7 @@
 #include "ad.h"
 #include "fsmc.h"
 
+#define DS_SC
 
 ScManager sc;
 CanApp can;
@@ -125,7 +126,8 @@ void io_init(void)
 void sc_init(void)
 {
 	sc.SetCan(&can);
-	can.scData = &sc.shareData;
+	can.sCan = &sc;
+	
 	SysMode.scData = &sc.shareData;
 	SysMode.preStep1Relay = &preChargeRelay;
 	SysMode.preStep2Relay = &preCharge2Relay;

@@ -167,104 +167,104 @@ static void Can_Filter_Configuration(void)
 	//----------------------------------------------------------------
 	// CAN1接收全部数据
 	//----------------------------------------------------------------
-//	CAN_FilterInitStructure.CAN_FilterNumber         = 0;
-//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
-//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0000;
-//	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = 0x0000;
-//	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0000; 
-//	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
-//	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
-//	CAN_FilterInit(&CAN_FilterInitStructure);
-
-	////---------------------------------------------------------------
-	//// CAN的滤波器设定
-	////---------------------------------------------------------------
-	CAN_FilterInitStructure.CAN_FilterMode           = CAN_FilterMode_IdMask;
-	CAN_FilterInitStructure.CAN_FilterScale          = CAN_FilterScale_32bit;
-	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = CAN_SINK_ID_MASK;
-	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0;
+	CAN_FilterInitStructure.CAN_FilterNumber         = 0;
+	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0000;
+	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = 0x0000;
+	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0000; 
 	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
 	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
-	//-------------------------------------------------------------
-	// CAN1滤波器设定   
-	//-------------------------------------------------------------
-	//第一个滤波器
-	CAN_FilterInitStructure.CAN_FilterNumber         = 0;
-	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1<<3);
-	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
 	CAN_FilterInit(&CAN_FilterInitStructure);
-	////第二个滤波器
-	CAN_FilterInitStructure.CAN_FilterNumber         = 1;
-	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1CX<<3);
-	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
-	CAN_FilterInit(&CAN_FilterInitStructure);
-	////第三个滤波器
-//	CAN_FilterInitStructure.CAN_FilterNumber         = 2;
-//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+
+//	////---------------------------------------------------------------
+//	//// CAN的滤波器设定
+//	////---------------------------------------------------------------
+//	CAN_FilterInitStructure.CAN_FilterMode           = CAN_FilterMode_IdMask;
+//	CAN_FilterInitStructure.CAN_FilterScale          = CAN_FilterScale_32bit;
+//	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = CAN_SINK_ID_MASK;
+//	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0;
+//	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
+//	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
+//	//-------------------------------------------------------------
+//	// CAN1滤波器设定   
+//	//-------------------------------------------------------------
+//	//第一个滤波器
+//	CAN_FilterInitStructure.CAN_FilterNumber         = 0;
+//	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1<<3);
 //	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
 //	CAN_FilterInit(&CAN_FilterInitStructure);
-	////第四个滤波器
-	//CAN_FilterInitStructure.CAN_FilterNumber         = 3;
-	//CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
-	//CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0020;
-	//CAN_FilterInit(&CAN_FilterInitStructure);
-	////第五个滤波器
-//	CAN_FilterInitStructure.CAN_FilterNumber         = 4;
-//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
-//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0080;
+//	////第二个滤波器
+//	CAN_FilterInitStructure.CAN_FilterNumber         = 1;
+//	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1CX<<3);
+//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
 //	CAN_FilterInit(&CAN_FilterInitStructure);
+//	////第三个滤波器
+////	CAN_FilterInitStructure.CAN_FilterNumber         = 2;
+////	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+////	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
+////	CAN_FilterInit(&CAN_FilterInitStructure);
+//	////第四个滤波器
+//	//CAN_FilterInitStructure.CAN_FilterNumber         = 3;
+//	//CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+//	//CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0020;
+//	//CAN_FilterInit(&CAN_FilterInitStructure);
+//	////第五个滤波器
+////	CAN_FilterInitStructure.CAN_FilterNumber         = 4;
+////	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+////	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0080;
+////	CAN_FilterInit(&CAN_FilterInitStructure);
 #endif
 
 #if(BSP_USE_CAN2 == 1)    
 	//----------------------------------------------------------------
 	// CAN2接收全部数据
 	//----------------------------------------------------------------
-//	CAN_FilterInitStructure.CAN_FilterNumber         = 14;
-//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
-//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0000;
-//	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = 0x0000;
-//	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0000; 
-//	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
-//	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
-//	CAN_FilterInit(&CAN_FilterInitStructure);
+	CAN_FilterInitStructure.CAN_FilterNumber         = 14;
+	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0000;
+	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = 0x0000;
+	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0000; 
+	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
+	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
+	CAN_FilterInit(&CAN_FilterInitStructure);
 
 	////---------------------------------------------------------------
 	//// CAN的滤波器设定
 	////---------------------------------------------------------------
-	CAN_FilterInitStructure.CAN_FilterMode           = CAN_FilterMode_IdMask;
-	CAN_FilterInitStructure.CAN_FilterScale          = CAN_FilterScale_32bit;
-	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = CAN_SINK_ID_MASK;
-	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0;
-	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
-	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
-	////-------------------------------------------------------------
-	//// CAN2滤波器设定   
-	////-------------------------------------------------------------
-	////第一个滤波器
-	CAN_FilterInitStructure.CAN_FilterNumber         = 14;
-	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1<<3);
-	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
-	CAN_FilterInit(&CAN_FilterInitStructure); 
-	////第二个滤波器
-	CAN_FilterInitStructure.CAN_FilterNumber         = 15;
-	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1CX<<3);
-	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
-	CAN_FilterInit(&CAN_FilterInitStructure);
-	////第三个滤波器
-//	CAN_FilterInitStructure.CAN_FilterNumber         = 16;
-//	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
-//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0070;
+//	CAN_FilterInitStructure.CAN_FilterMode           = CAN_FilterMode_IdMask;
+//	CAN_FilterInitStructure.CAN_FilterScale          = CAN_FilterScale_32bit;
+//	CAN_FilterInitStructure.CAN_FilterMaskIdHigh     = CAN_SINK_ID_MASK;
+//	CAN_FilterInitStructure.CAN_FilterMaskIdLow      = 0x0;
+//	CAN_FilterInitStructure.CAN_FilterFIFOAssignment = 0;
+//	CAN_FilterInitStructure.CAN_FilterActivation     = ENABLE;
+//	////-------------------------------------------------------------
+//	//// CAN2滤波器设定   
+//	////-------------------------------------------------------------
+//	////第一个滤波器
+//	CAN_FilterInitStructure.CAN_FilterNumber         = 14;
+//	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1<<3);
+//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
+//	CAN_FilterInit(&CAN_FilterInitStructure); 
+//	////第二个滤波器
+//	CAN_FilterInitStructure.CAN_FilterNumber         = 15;
+//	CAN_FilterInitStructure.CAN_FilterIdHigh         = (CAN_ID_M1CX<<3);
+//	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0;
 //	CAN_FilterInit(&CAN_FilterInitStructure);
-	////第四个滤波器
-	//CAN_FilterInitStructure.CAN_FilterNumber         = 17;
-	//CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
-	//CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0020;
-	//CAN_FilterInit(&CAN_FilterInitStructure);
-	////第五个滤波器
-	//CAN_FilterInitStructure.CAN_FilterNumber         = 18;
-	//CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
-	//CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0080;
-	//CAN_FilterInit(&CAN_FilterInitStructure);
+//	////第三个滤波器
+////	CAN_FilterInitStructure.CAN_FilterNumber         = 16;
+////	CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+////	CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0070;
+////	CAN_FilterInit(&CAN_FilterInitStructure);
+//	////第四个滤波器
+//	//CAN_FilterInitStructure.CAN_FilterNumber         = 17;
+//	//CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+//	//CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0020;
+//	//CAN_FilterInit(&CAN_FilterInitStructure);
+//	////第五个滤波器
+//	//CAN_FilterInitStructure.CAN_FilterNumber         = 18;
+//	//CAN_FilterInitStructure.CAN_FilterIdHigh         = 0x0000;
+//	//CAN_FilterInitStructure.CAN_FilterIdLow          = 0x0080;
+//	//CAN_FilterInit(&CAN_FilterInitStructure);
 #endif
 }
 
@@ -419,20 +419,26 @@ can1  FIFO0接收中断
 *****************************************************************/
 void CAN1_RX0_IRQHandler(void)
 {
-    CAN_Receive(CAN1, CAN_FIFO0, &can1_rx_msgs[can1_rx_msgs_index]);//can使用FIFO0中断接收;
-    if(-RT_EFULL == rt_mb_send(&mb_can1_rx, (rt_uint32_t)&can1_rx_msgs[can1_rx_msgs_index]))
-    {
-    }
-    /*若有需要可插入接收队列*/
-    if(++can1_rx_msgs_index == 64)
-    {
-        can1_rx_msgs_index = 0;
-    }
+    rt_interrupt_enter();
+	if(CAN_GetITStatus(CAN1, CAN_IT_FMP0))
+	{
+		CAN_Receive(CAN1, CAN_FIFO0, &can1_rx_msgs[can1_rx_msgs_index]);//can使用FIFO0中断接收;
+		if(-RT_EFULL == rt_mb_send(&mb_can1_rx, (rt_uint32_t)&can1_rx_msgs[can1_rx_msgs_index]))
+		{
+		}
+		/*若有需要可插入接收队列*/
+		if(++can1_rx_msgs_index == 64)
+		{
+			can1_rx_msgs_index = 0;
+		}
+	}
+	rt_interrupt_leave();
 }
 
 void CAN2_RX0_IRQHandler(void)
 {
-    if(CAN_GetITStatus(CAN2, CAN_IT_FF0)) 
+    rt_interrupt_enter();
+	if(CAN_GetITStatus(CAN2, CAN_IT_FF0)) 
     { 
         CAN_ClearITPendingBit(CAN2, CAN_IT_FF0); 
     } 
@@ -449,7 +455,8 @@ void CAN2_RX0_IRQHandler(void)
         {
             can2_rx_msgs_index = 0;
         }
-    }  
+    }
+	rt_interrupt_leave();
 }
 
 

@@ -12,7 +12,7 @@ private:
 	CanTxMsg _tCyc;									// CAN·¢ËÍ»º³åÇø
 	STD_MSG_CON_TB *_std_msg;
 public:
-	ScData * scData;
+	Sc * sCan;
 
 	CanApp(void);
 	CanBuf_config CanBuf;

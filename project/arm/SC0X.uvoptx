@@ -73,7 +73,7 @@
         <LExpSel>0</LExpSel>
       </OPTXL>
       <OPTFL>
-        <tvExp>0</tvExp>
+        <tvExp>1</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
         <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
@@ -202,7 +202,7 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>sc,0x10</ItemText>
+          <ItemText>sc,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
@@ -217,22 +217,12 @@
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>msg</ItemText>
+          <ItemText>can</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>mb_can_tx</ItemText>
-        </Ww>
-        <Ww>
-          <count>5</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>canTimeOutWarn</ItemText>
-        </Ww>
-        <Ww>
-          <count>6</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>test</ItemText>
+          <ItemText>_std_msg_table</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -246,7 +236,7 @@
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>1</SubType>
-          <ItemText>tx_buffer</ItemText>
+          <ItemText>0x200071aa</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>
@@ -352,7 +342,7 @@
 
   <Group>
     <GroupName>userApp</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
