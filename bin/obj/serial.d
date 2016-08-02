@@ -1,0 +1,14 @@
+..\..\bin\obj\serial.o: ..\..\components\drivers\serial\serial.c
+..\..\bin\obj\serial.o: ..\..\include\rthw.h
+..\..\bin\obj\serial.o: ..\..\include\rtthread.h
+..\..\bin\obj\serial.o: ..\..\bsp\stm32f40x\rtconfig.h
+..\..\bin\obj\serial.o: ..\..\include\rtdebug.h
+..\..\bin\obj\serial.o: ..\..\include\rtdef.h
+..\..\bin\obj\serial.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\..\bin\obj\serial.o: ..\..\include\rtservice.h
+..\..\bin\obj\serial.o: ..\..\include\rtm.h
+..\..\bin\obj\serial.o: ..\..\include\rtthread.h
+..\..\bin\obj\serial.o: ..\..\components\drivers\include\rtdevice.h
+..\..\bin\obj\serial.o: ..\..\components\drivers\include\drivers/serial.h
+..\..\bin\obj\serial.o: ..\..\components\drivers\include\drivers/pin.h
+..\..\bin\obj\serial.o: ..\..\components\drivers\include\rtdevice.h

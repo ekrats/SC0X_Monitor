@@ -1,0 +1,13 @@
+..\..\bin\obj\symbol.o: ..\..\components\finsh\symbol.c
+..\..\bin\obj\symbol.o: ..\..\components\finsh\finsh.h
+..\..\bin\obj\symbol.o: ..\..\include\rtthread.h
+..\..\bin\obj\symbol.o: ..\..\bsp\stm32f40x\rtconfig.h
+..\..\bin\obj\symbol.o: ..\..\include\rtdebug.h
+..\..\bin\obj\symbol.o: ..\..\include\rtdef.h
+..\..\bin\obj\symbol.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\..\bin\obj\symbol.o: ..\..\include\rtservice.h
+..\..\bin\obj\symbol.o: ..\..\include\rtm.h
+..\..\bin\obj\symbol.o: ..\..\include\rtthread.h
+..\..\bin\obj\symbol.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
+..\..\bin\obj\symbol.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\..\bin\obj\symbol.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -7,7 +7,7 @@
 #define DS_SC
 
 ScManager sc;
-CanApp can;
+CanApp can(sc.shareData);
 System_Mode SysMode;
 CbMode	Cb1Mode;
 CbMode	Cb2Mode;
@@ -126,7 +126,6 @@ void io_init(void)
 void sc_init(void)
 {
 	sc.SetCan(&can);
-	can.sCan = &sc;
 	
 	SysMode.scData = &sc.shareData;
 	SysMode.preStep1Relay = &preChargeRelay;

@@ -1,0 +1,10 @@
+..\..\bin\obj\slab.o: ..\..\src\slab.c
+..\..\bin\obj\slab.o: ..\..\include\rthw.h
+..\..\bin\obj\slab.o: ..\..\include\rtthread.h
+..\..\bin\obj\slab.o: ..\..\bsp\stm32f40x\rtconfig.h
+..\..\bin\obj\slab.o: ..\..\include\rtdebug.h
+..\..\bin\obj\slab.o: ..\..\include\rtdef.h
+..\..\bin\obj\slab.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\..\bin\obj\slab.o: ..\..\include\rtservice.h
+..\..\bin\obj\slab.o: ..\..\include\rtm.h
+..\..\bin\obj\slab.o: ..\..\include\rtthread.h

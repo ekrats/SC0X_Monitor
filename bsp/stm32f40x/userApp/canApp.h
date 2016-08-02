@@ -12,9 +12,9 @@ private:
 	CanTxMsg _tCyc;									// CAN·¢ËÍ»º³åÇø
 	STD_MSG_CON_TB *_std_msg;
 public:
-	Sc * sCan;
-
+	ScData & sCan;
 	CanApp(void);
+	CanApp(ScData & scCan);
 	CanBuf_config CanBuf;
 	uint16_t    CanCnt;
 	uint16_t	CanFltCnt[6];

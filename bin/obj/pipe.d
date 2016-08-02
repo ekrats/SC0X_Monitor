@@ -1,0 +1,14 @@
+..\..\bin\obj\pipe.o: ..\..\components\drivers\src\pipe.c
+..\..\bin\obj\pipe.o: ..\..\include\rthw.h
+..\..\bin\obj\pipe.o: ..\..\include\rtthread.h
+..\..\bin\obj\pipe.o: ..\..\bsp\stm32f40x\rtconfig.h
+..\..\bin\obj\pipe.o: ..\..\include\rtdebug.h
+..\..\bin\obj\pipe.o: ..\..\include\rtdef.h
+..\..\bin\obj\pipe.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\..\bin\obj\pipe.o: ..\..\include\rtservice.h
+..\..\bin\obj\pipe.o: ..\..\include\rtm.h
+..\..\bin\obj\pipe.o: ..\..\include\rtthread.h
+..\..\bin\obj\pipe.o: ..\..\components\drivers\include\rtdevice.h
+..\..\bin\obj\pipe.o: ..\..\components\drivers\include\drivers/serial.h
+..\..\bin\obj\pipe.o: ..\..\components\drivers\include\drivers/pin.h
+..\..\bin\obj\pipe.o: ..\..\components\drivers\include\rtdevice.h

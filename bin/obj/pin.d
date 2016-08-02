@@ -1,0 +1,17 @@
+..\..\bin\obj\pin.o: ..\..\components\drivers\misc\pin.c
+..\..\bin\obj\pin.o: ..\..\components\drivers\include\drivers/pin.h
+..\..\bin\obj\pin.o: ..\..\include\rtthread.h
+..\..\bin\obj\pin.o: ..\..\bsp\stm32f40x\rtconfig.h
+..\..\bin\obj\pin.o: ..\..\include\rtdebug.h
+..\..\bin\obj\pin.o: ..\..\include\rtdef.h
+..\..\bin\obj\pin.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\..\bin\obj\pin.o: ..\..\include\rtservice.h
+..\..\bin\obj\pin.o: ..\..\include\rtm.h
+..\..\bin\obj\pin.o: ..\..\include\rtthread.h
+..\..\bin\obj\pin.o: ..\..\components\drivers\include\rtdevice.h
+..\..\bin\obj\pin.o: ..\..\components\drivers\include\drivers/serial.h
+..\..\bin\obj\pin.o: ..\..\components\drivers\include\drivers/pin.h
+..\..\bin\obj\pin.o: ..\..\components\finsh\finsh.h
+..\..\bin\obj\pin.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
+..\..\bin\obj\pin.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\..\bin\obj\pin.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

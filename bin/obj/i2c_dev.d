@@ -1,0 +1,15 @@
+..\..\bin\obj\i2c_dev.o: ..\..\components\drivers\i2c\i2c_dev.c
+..\..\bin\obj\i2c_dev.o: ..\..\components\drivers\include\rtdevice.h
+..\..\bin\obj\i2c_dev.o: ..\..\include\rtthread.h
+..\..\bin\obj\i2c_dev.o: ..\..\bsp\stm32f40x\rtconfig.h
+..\..\bin\obj\i2c_dev.o: ..\..\include\rtdebug.h
+..\..\bin\obj\i2c_dev.o: ..\..\include\rtdef.h
+..\..\bin\obj\i2c_dev.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\..\bin\obj\i2c_dev.o: ..\..\include\rtservice.h
+..\..\bin\obj\i2c_dev.o: ..\..\include\rtm.h
+..\..\bin\obj\i2c_dev.o: ..\..\include\rtthread.h
+..\..\bin\obj\i2c_dev.o: ..\..\components\drivers\include\drivers/serial.h
+..\..\bin\obj\i2c_dev.o: ..\..\components\drivers\include\drivers/pin.h
+..\..\bin\obj\i2c_dev.o: ..\..\components\drivers\include\rtdevice.h
+..\..\bin\obj\i2c_dev.o: ..\..\components\drivers\include\drivers/i2c.h
+..\..\bin\obj\i2c_dev.o: ..\..\components\drivers\include\drivers/i2c_dev.h

@@ -1,0 +1,10 @@
+..\..\bin\obj\object.o: ..\..\src\object.c
+..\..\bin\obj\object.o: ..\..\include\rtthread.h
+..\..\bin\obj\object.o: ..\..\bsp\stm32f40x\rtconfig.h
+..\..\bin\obj\object.o: ..\..\include\rtdebug.h
+..\..\bin\obj\object.o: ..\..\include\rtdef.h
+..\..\bin\obj\object.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+..\..\bin\obj\object.o: ..\..\include\rtservice.h
+..\..\bin\obj\object.o: ..\..\include\rtm.h
+..\..\bin\obj\object.o: ..\..\include\rtthread.h
+..\..\bin\obj\object.o: ..\..\include\rthw.h
