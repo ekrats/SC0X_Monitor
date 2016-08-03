@@ -13,24 +13,24 @@ extern CanApp can;
 /****************************************************************
 * Description    : STD CAN ˝æ›÷° ≈‰÷√±Ì
 *****************************************************************/
-STD_MSG_CON_TB _std_msg_table[CAN_STD_FRAME_NUM] = 
+static STD_MSG_CON_TB _std_msg_table[CAN_STD_FRAME_NUM] = 
 { 
 	/*port     type          dest         src       func                  len    clock,   tick  update   candata               appdata  */
-	{PORT1, CAN_TX_DIRC, CAN_ID_C1,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   10,    0, 	(uint8_t *)&can.CanBuf.Cb1ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb1ChargeCmd,    	RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C2,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   10,    0, 	(uint8_t *)&can.CanBuf.Cb2ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb2ChargeCmd,    	RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C3,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   10,    0, 	(uint8_t *)&can.CanBuf.Cb3ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb3ChargeCmd,    	RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C4,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   10,    0, 	(uint8_t *)&can.CanBuf.Cb4ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb4ChargeCmd,    	RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C5,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   10,    0, 	(uint8_t *)&can.CanBuf.Cb5ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb5ChargeCmd,    	RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C1,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   12,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C2,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   12,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C3,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   12,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C4,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   12,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C5,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   12,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C1,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   300,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C2,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   300,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C3,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   300,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C4,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   300,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_C5,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   300,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C1,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   100,    0, 	(uint8_t *)&can.CanBuf.Cb1ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb1ChargeCmd,    	RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C2,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   100,    0, 	(uint8_t *)&can.CanBuf.Cb2ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb2ChargeCmd,    	RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C3,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   100,    0, 	(uint8_t *)&can.CanBuf.Cb3ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb3ChargeCmd,    	RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C4,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   100,    0, 	(uint8_t *)&can.CanBuf.Cb4ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb4ChargeCmd,    	RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C5,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   100,    0, 	(uint8_t *)&can.CanBuf.Cb5ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.Cb5ChargeCmd,    	RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C1,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   100,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C2,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   100,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C3,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   100,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C4,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   100,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C5,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   100,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C1,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   3000,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C2,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   3000,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C3,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   3000,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C4,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   3000,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C5,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   3000,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
 	
 	{PORT1, CAN_ZX_DIRC, CAN_ID_C1,    CAN_ID_M1,  CAN_FUNC_SET_PARA,   24,     0,	   0,      0, 	(uint8_t *)&can.CanBuf.Cb1WPara,   (uint8_t *)&can.sCan.Cb1WPara,    	RT_NULL},
 	{PORT1, CAN_ZX_DIRC, CAN_ID_C2,    CAN_ID_M1,  CAN_FUNC_SET_PARA,   24,     0,	   0,      0, 	(uint8_t *)&can.CanBuf.Cb2WPara,   (uint8_t *)&can.sCan.Cb2WPara,    	RT_NULL},

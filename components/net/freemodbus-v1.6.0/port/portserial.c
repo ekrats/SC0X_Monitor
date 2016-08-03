@@ -190,8 +190,10 @@ void prvvUARTRxISR(void)
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void Bsp_Modbus_Irqhandler(void)
+
+void $Sub$$USART3_IRQHandler(void)
 {
+	rt_interrupt_enter();
 	//Ω” ’÷–∂œ
 	if (USART_GetITStatus(MODBUS_USE_USART, USART_IT_RXNE) == SET)
 	{
@@ -206,5 +208,6 @@ void Bsp_Modbus_Irqhandler(void)
 	{
 		prvvUARTTxReadyISR();
 	}
+	rt_interrupt_leave();
 }
 #endif

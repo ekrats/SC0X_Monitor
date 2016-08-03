@@ -240,7 +240,7 @@ void USART3_IRQHandler(void)
     rt_interrupt_enter();
     if (USART_GetITStatus(uart->uart_device, USART_IT_RXNE) != RESET)
     {
-        rt_hw_serial_isr(&serial3, RT_SERIAL_EVENT_RX_IND);
+		rt_hw_serial_isr(&serial3, RT_SERIAL_EVENT_RX_IND);
     }
     if (USART_GetITStatus(uart->uart_device, USART_IT_TC) != RESET)
     {

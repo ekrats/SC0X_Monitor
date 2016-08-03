@@ -190,7 +190,7 @@ static void serial_services_entry( void* parameter)
                 {
                     function_switch = use_ptu;
                 }
-                else if(serial1_rx_buffer[rx_length - 1] == 0x0D)//控制台指令以换行结束
+                else if(serial1_rx_buffer[rx_length - 1] == 0x0A)//控制台指令以换行结束
                 {
                     function_switch = use_console;
                 }

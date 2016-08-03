@@ -183,7 +183,7 @@ static void prvvUARTRxISR(void)
 * Output         : None
 * Return         : None
 *******************************************************************************/
-void Bsp_Modbus_Irqhandler(void)
+void $Sub$$USART3_IRQHandler(void)
 {
 	rt_interrupt_enter();
 	//Ω” ’÷–∂œ

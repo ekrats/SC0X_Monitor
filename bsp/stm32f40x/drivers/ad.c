@@ -15,6 +15,7 @@
 #include "ad.h"
 #include <rtthread.h>
 #include "static_mem.h"
+#include "math.h"
 
 #define ADC_DR_OFFSET        ((uint32_t)0x4C)
 #define ADC1_DR_ADRESS       ((uint32_t)(ADC1_BASE + ADC_DR_OFFSET))
@@ -277,6 +278,30 @@ int System_hw_ADC_Init(void)
 * Return         : None
 *******************************************************************************/
 
+static uint16_t ACcal(uint16_t vSrc)
+{
+	uint16_t  val;
+	
+	if (vSrc > 2048)
+	{
+		val = vSrc - 2048;
+	}
+	else
+	{
+		val = 2048 - vSrc;
+	}
+	return val*val;
+}
+
+static int ACFltAnalog(int sum, int lenth)
+{
+	double ss;
+	
+	ss = (double)sum / lenth;
+	
+	return (int)sqrt(ss);
+}
+
 void adc_update(void)
 {
 	rt_uint8_t i = 0;
@@ -304,20 +329,20 @@ void adc_update(void)
 
 		sum6 += ADC3_ValTemp[i * ADC3_CHANNELS + 0];
 		sum7 += ADC3_ValTemp[i * ADC3_CHANNELS + 1];
-		sum8 += ADC3_ValTemp[i * ADC3_CHANNELS + 3];
-		sum9 += ADC3_ValTemp[i * ADC3_CHANNELS + 4];
+		sum8 += ACcal(ADC3_ValTemp[i * ADC3_CHANNELS + 3]);
+		sum9 += ACcal(ADC3_ValTemp[i * ADC3_CHANNELS + 4]);
 		sum10 += ADC3_ValTemp[i * ADC3_CHANNELS + 5];
 	}
-	ad_buffer[i_in1_index] = sum0 / ADC_FLT1_BUFFER_SIZE;
-	ad_buffer[i_in2_index] = sum1 / ADC_FLT1_BUFFER_SIZE;
-	ad_buffer[temp_module1_index] = sum2 / ADC_FLT1_BUFFER_SIZE;
-	ad_buffer[temp_module2_index] = sum3 / ADC_FLT1_BUFFER_SIZE;
-	ad_buffer[temp_in_index] = sum4 / ADC_FLT1_BUFFER_SIZE;
-	ad_buffer[temp_out_index] = sum5 / ADC_FLT1_BUFFER_SIZE;
-	ad_buffer[temp_cap1_index] = sum6 / ADC_FLT1_BUFFER_SIZE;
-	ad_buffer[temp_cap2_index] = sum7 / ADC_FLT1_BUFFER_SIZE;
-	ad_buffer[u_ac1_index] = sum8 / ADC_FLT1_BUFFER_SIZE;
-	ad_buffer[u_ac2_index] = sum9 / ADC_FLT1_BUFFER_SIZE;
+	ad_buffer[temp_module1_index] = sum0 / ADC_FLT1_BUFFER_SIZE;
+	ad_buffer[temp_module2_index] = sum1 / ADC_FLT1_BUFFER_SIZE;
+	ad_buffer[temp_in_index] = sum2 / ADC_FLT1_BUFFER_SIZE;
+	ad_buffer[temp_out_index] = sum3 / ADC_FLT1_BUFFER_SIZE;
+	ad_buffer[temp_cap1_index] = sum4 / ADC_FLT1_BUFFER_SIZE;
+	ad_buffer[temp_cap2_index] = sum5 / ADC_FLT1_BUFFER_SIZE;
+	ad_buffer[i_in1_index] = sum6 / ADC_FLT1_BUFFER_SIZE;
+	ad_buffer[i_in2_index] = sum7 / ADC_FLT1_BUFFER_SIZE;
+	ad_buffer[u_ac1_index] = ACFltAnalog(sum8, ADC_FLT1_BUFFER_SIZE);
+	ad_buffer[u_ac2_index] = ACFltAnalog(sum9, ADC_FLT1_BUFFER_SIZE);
 	ad_buffer[u_bus_index] = sum10 / ADC_FLT1_BUFFER_SIZE;
 }
 

@@ -28,14 +28,14 @@ extern "C" {
 
 enum ad_data_buffer_index
 {
-    i_in1_index,
-    i_in2_index,
 	temp_module1_index,
 	temp_module2_index,
 	temp_in_index,
     temp_out_index,
 	temp_cap1_index,
 	temp_cap2_index,
+	i_in1_index,
+    i_in2_index,
     u_ac1_index,
 	u_ac2_index,
 	u_bus_index,

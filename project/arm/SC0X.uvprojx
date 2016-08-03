@@ -517,6 +517,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\bsp\stm32f40x\drivers\ad.c</FilePath>
             </File>
+            <File>
+              <FileName>cpuusage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\bsp\stm32f40x\drivers\cpuusage.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

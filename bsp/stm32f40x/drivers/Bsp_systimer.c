@@ -56,9 +56,9 @@ void TIM4_IRQHandler(void)
 	if((cnt1++ % 5) == 0)
 	{
 		rt_sem_release(&sem_adio_task);
-		Bsp_can_send_cycle_event();
+//		Bsp_can_send_cycle_event();
 	}
-
+	Bsp_can_send_cycle_event();
 	/* leave interrupt */
 	rt_interrupt_leave();
 }

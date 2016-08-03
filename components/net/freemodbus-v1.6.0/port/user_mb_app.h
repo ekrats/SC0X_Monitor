@@ -56,6 +56,6 @@
 #define M_DI_RESERVE                     (1)		  //±£¡Ù
 
 void Bsp_Modbus_Cycle(void);
-void Bsp_Modbus_Irqhandler(void);
+//void Bsp_Modbus_Irqhandler(void);
 
 #endif
