@@ -9,11 +9,11 @@
 ScManager sc;
 CanApp can(sc.shareData);
 System_Mode SysMode;
-CbMode	Cb1Mode;
-CbMode	Cb2Mode;
-CbMode	Cb3Mode;
-CbMode	Cb4Mode;
-CbMode	Cb5Mode;
+CbMode	Cb1Mode(sc.shareData.canAppBuf.ChargeCmd.cb1Cmd);
+CbMode	Cb2Mode(sc.shareData.canAppBuf.ChargeCmd.cb2Cmd);
+CbMode	Cb3Mode(sc.shareData.canAppBuf.ChargeCmd.cb3Cmd);
+CbMode	Cb4Mode(sc.shareData.canAppBuf.ChargeCmd.cb4Cmd);
+CbMode	Cb5Mode(sc.shareData.canAppBuf.ChargeCmd.cb5Cmd);
 
 static Relay	preChargeRelay(60000);
 static Relay	preCharge2Relay(500);
@@ -39,11 +39,11 @@ void ScManager::RelayRun(void)
 void module_init(void)
 {
 	SysMode.Init(&sc.shareData.input.io.in[cabinetN]);
-	Cb1Mode.Init(7, CB_STATE_IDLE, (int *)&sc.shareData.canAppBuf.Cb1ChargeCmd);
-	Cb2Mode.Init(8, CB_STATE_IDLE, (int *)&sc.shareData.canAppBuf.Cb2ChargeCmd);
-	Cb3Mode.Init(9, CB_STATE_IDLE, (int *)&sc.shareData.canAppBuf.Cb3ChargeCmd);
-	Cb4Mode.Init(10, CB_STATE_IDLE, (int *)&sc.shareData.canAppBuf.Cb4ChargeCmd);
-	Cb5Mode.Init(11, CB_STATE_IDLE, (int *)&sc.shareData.canAppBuf.Cb5ChargeCmd);
+	Cb1Mode.Init(7, CB_STATE_IDLE);
+	Cb2Mode.Init(8, CB_STATE_IDLE);
+	Cb3Mode.Init(9, CB_STATE_IDLE);
+	Cb4Mode.Init(10, CB_STATE_IDLE);
+	Cb5Mode.Init(11, CB_STATE_IDLE);
 }
 
 void ScManager::Init(void)

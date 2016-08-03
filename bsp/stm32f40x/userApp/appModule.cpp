@@ -122,11 +122,11 @@ void CbMode::CB_Manual_Cal(void)
 {
 	if (Charging != true)
 	{
-		*chargeCmd = 1;
+		chargeCmd = 1;
 		SendCan(canIndex);
 		return ;
 	}
-	*chargeCmd = 1;
+	chargeCmd = 1;
 	startDelay->Stop();
 	floatDelay->Stop();
 }
@@ -154,7 +154,7 @@ void CbMode::CB_Auto_Cal(void)
 			startDelay->Start();
 			if (startDelay->GetResult())
 			{
-				*chargeCmd = 1;
+				chargeCmd = 1;
 				SendCan(canIndex);
 			}
 		}

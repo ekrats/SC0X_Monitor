@@ -151,9 +151,12 @@ typedef struct{
 }CB_Flags_STYP;
 
 typedef struct{
-	u8 CMD;
-	u8 Rate;
-	u8 res[6];
+	u8 cb1Cmd;
+	u8 cb2Cmd;
+	u8 cb3Cmd;
+	u8 cb4Cmd;
+	u8 cb5Cmd;
+	u8 res[3];
 }Charge_Cmd_STYP, *PCharge_Cmd_STYP;
 
 typedef struct{

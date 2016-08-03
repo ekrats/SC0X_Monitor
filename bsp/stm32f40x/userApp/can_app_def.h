@@ -153,11 +153,7 @@ typedef struct _std_msg_config
 
 typedef struct
 {
-	Charge_Cmd_STYP Cb1ChargeCmd;
-	Charge_Cmd_STYP Cb2ChargeCmd;
-	Charge_Cmd_STYP Cb3ChargeCmd;
-	Charge_Cmd_STYP Cb4ChargeCmd;
-	Charge_Cmd_STYP Cb5ChargeCmd;
+	Charge_Cmd_STYP ChargeCmd;
 	CAN_CB_Status_STYP	Cb1Status;
 	CAN_CB_Status_STYP	Cb2Status;
 	CAN_CB_Status_STYP	Cb3Status;
@@ -180,11 +176,7 @@ typedef struct
 
 typedef struct
 {
-	Charge_Cmd_STYP Cb1ChargeCmd;
-	Charge_Cmd_STYP Cb2ChargeCmd;
-	Charge_Cmd_STYP Cb3ChargeCmd;
-	Charge_Cmd_STYP Cb4ChargeCmd;
-	Charge_Cmd_STYP Cb5ChargeCmd;
+	Charge_Cmd_STYP ChargeCmd;
 	DS_CAN_AN_VAL   AD_RxChnn; 
 	uint8_t	reBoot[8];
 	uint8_t null[8];

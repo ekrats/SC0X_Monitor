@@ -39,7 +39,7 @@ public:
 private:
 		// ÕªÒª: 
     //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
-		int *   chargeCmd;
+		uint8_t &   chargeCmd;
 
 		bool	chargeEnable;
 
@@ -66,16 +66,15 @@ private:
     //     Ä£¿éÊÇ·ñ¹ÊÕÏ?
 		int canIndex;
 public:
-	CbMode(void)
+	CbMode(uint8_t & cmd):chargeCmd(cmd)
 	{;}
 	Relay * startDelay;
 	Relay * floatDelay;
 	void Run(void);
-	void Init(int index, int mode, int * cmd)
+	void Init(int index, int mode)
 	{
 		this->canIndex = index;
 		this->modeSet = mode;
-		chargeCmd = cmd;
 	}
 	void CB_Idle_Cal(void);
 	void CB_Standby_Cal(void);
