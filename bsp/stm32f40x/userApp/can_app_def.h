@@ -96,15 +96,20 @@ enum{
 	CAN_FUNC_S_POLL,				//???????????
 	CAN_FUNC_P_POLL,				//?????????
 	CAN_FUNC_AD_POLL,
+	
+	CAN_FUNC_IAP_INFO = 20,
+	CAN_FUNC_IAP_WRITE,
+	CAN_FUNC_IAP_CHECK,
+	CAN_FUNC_IAP,
 };
 	
 typedef union{
 	u32 extIDDW;
 	struct{
 		u16 classID:			4;	
-		u16 packetID:			5;
+		u16 packetID:			6;
 		u16 sourceID:			5;
-		u16 res:					2;
+		u16 lastFrame:			1;
 		u16 sinkID:				5;
 		u16 func:					5;
 		u16 prio:					3;
@@ -170,6 +175,10 @@ typedef struct
 	CB_Para_STYP	Cb4WPara;
 	CB_Para_STYP	Cb5WPara;
 	DS_CAN_AN_VAL   AD_RxChnn; 
+	uint8_t iap_info[16];
+	uint8_t iap_file[256];
+	uint8_t iap_check[8];
+	uint8_t	iap_reply[8];
 	uint8_t	reBoot[8];
 	uint8_t null[8];
 }CanBuf_config;
@@ -178,8 +187,13 @@ typedef struct
 {
 	Charge_Cmd_STYP ChargeCmd;
 	DS_CAN_AN_VAL   AD_RxChnn; 
+	uint8_t iap_info[16];
+	uint8_t iap_file[256];
+	uint8_t iap_check[8];
+	uint8_t	iap_reply[8];
 	uint8_t	reBoot[8];
 	uint8_t null[8];
+	uint16_t iap_index;
 }canAppBuf_config;
 
 #ifdef __cplusplus

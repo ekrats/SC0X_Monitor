@@ -18,7 +18,7 @@ public:
 	CanBuf_config CanBuf;
 	uint16_t    CanCnt;
 	uint16_t	CanFltCnt[6];
-	uint16_t    CanStateWord;
+	int    CanStateWord;
 	int			canOffTime;
 
 	void CycleMsgUpdate_data(void);

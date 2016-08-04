@@ -16,6 +16,8 @@
 #include "crc16.h"
 #include "string.h"
 #include "iap_service.h"
+#include "ScManagerExtern.h"
+#include "DataStruct.h"
 
 serial_protocol protocol = { 0 };
 int cmd_code = 0;
@@ -23,7 +25,7 @@ static uint8_t usart_tx_data[TX_BUFFER_SIZE - 1];//4224+1
 uint16_t tx_length = 0;
 static int file_write_index = 0;
 
-static void check_file_call_back(int state_code)
+void check_file_call_back(int state_code)
 {
     usart_tx_data[0] = state_code;
     tx_length = 0;
@@ -32,6 +34,57 @@ static void check_file_call_back(int state_code)
     mem_printf((char*)protocol.tx_buffer, tx_length);
 }
 
+static void call_back(void * buffer, int length)
+{
+    ScData * p = (ScData *)GetShareDataPtr();
+	uint8_t * data = (uint8_t*)buffer;
+    int rx_file_index = 0;
+    switch (data[0])
+    {
+    case 0xcc:
+        {
+			iap_send(IAP_CMD_CHECK_FILE, 7);
+        }
+        return;
+
+    case 'u':
+        {
+            rt_memcpy(p->canAppBuf.iap_info, (uint8_t *)data + 2, length - 2);
+			iap_send(IAP_CMD_SET_INFO, length - 2);
+        }
+        return;
+
+    case 'f':
+        rx_file_index = (data[2] + (data[3] << 8));
+		if (p->canAppBuf.iap_index == file_write_index)
+		{
+			
+		}
+        else if (rx_file_index == file_write_index)
+        {
+            rt_memcpy(p->canAppBuf.iap_file, (uint8_t *)data + 4, length - 4);
+            file_write_index++;
+			iap_send(IAP_CMD_WRITE_FILE, length - 4);
+        }
+        else if (rx_file_index < file_write_index)
+        {
+            usart_tx_data[0] = 0x0;
+        }
+        else
+        {
+            usart_tx_data[0] = 0x81;
+        }
+        tx_length = 0;
+        return;
+
+    default://其它情况，不响应，直接返回
+        return;
+    }
+    tx_length = protocol.get_output_data(&protocol, usart_tx_data, tx_length + 1);
+    mem_printf((char*)protocol.tx_buffer, tx_length);
+}
+
+/*
 static void call_back(void * buffer, int length)
 {
     uint8_t * data = (uint8_t*)buffer;
@@ -93,7 +146,7 @@ static void call_back(void * buffer, int length)
     tx_length = protocol.get_output_data(&protocol, usart_tx_data, tx_length + 1);
     mem_printf((char*)protocol.tx_buffer, tx_length);
 }
-
+*/
 static void except(serial_protocol_exception exception)
 {
     switch (exception)

@@ -17,6 +17,11 @@
 
 #include "stm32f4xx.h"
 #include "serial_protocol.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern serial_protocol protocol;
 
 typedef struct
@@ -44,6 +49,10 @@ extern debug_control_t debug_instruction;
 
 void serial_comm_init(void);
 void mem_printf(const char *buffer, int size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

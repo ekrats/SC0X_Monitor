@@ -21,7 +21,7 @@ extern "C" {
 typedef enum
 {
     IAP_NULL,
-    IAP_CMD_CHECK_FILE,
+    IAP_CMD_CHECK_FILE = 3,
     IAP_CMD_SET_INFO,
     IAP_CMD_WRITE_FILE
 }iap_service_cmd;

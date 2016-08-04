@@ -17,8 +17,13 @@ static STD_MSG_CON_TB _std_msg_table[CAN_STD_FRAME_NUM] =
 { 
 	/*port     type          dest         src       func                  len    clock,   tick  update   candata               appdata  */
 	{PORT1, CAN_TX_DIRC, CAN_ID_Cx,    CAN_ID_M1,  CAN_FUNC_CHARGE, 	8,     0,	   20,    0, 	(uint8_t *)&can.CanBuf.ChargeCmd,    (uint8_t *)&can.sCan.canAppBuf.ChargeCmd,    	RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_Cx,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   20,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
-	{PORT1, CAN_TX_DIRC, CAN_ID_Cx,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   1000,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C0,    CAN_ID_M1,  CAN_FUNC_S_POLL,     8,     0,	   20,    0, 	can.CanBuf.null,    (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	{PORT1, CAN_TX_DIRC, CAN_ID_C0,    CAN_ID_M1,  CAN_FUNC_P_POLL, 	8,     0,	   1000,   0, 	can.CanBuf.null,   (uint8_t *)&can.sCan.canAppBuf.null,    			RT_NULL},
+	
+	{PORT1, CAN_ZX_DIRC, CAN_ID_Cx,    CAN_ID_M1,  CAN_FUNC_IAP_CHECK,   8,    0,	   0,      0, 	(uint8_t *)&can.CanBuf.iap_check,   (uint8_t *)&can.sCan.canAppBuf.iap_check,    	RT_NULL},
+	{PORT1, CAN_ZX_DIRC, CAN_ID_Cx,    CAN_ID_M1,  CAN_FUNC_IAP_INFO,  0x10,   0,	   0,      0, 	(uint8_t *)&can.CanBuf.iap_info,   (uint8_t *)&can.sCan.canAppBuf.iap_info,    	RT_NULL},
+	{PORT1, CAN_ZX_DIRC, CAN_ID_Cx,    CAN_ID_M1,  CAN_FUNC_IAP_WRITE, 0xfd,   0,	   0,      0, 	(uint8_t *)&can.CanBuf.iap_file,   (uint8_t *)&can.sCan.canAppBuf.iap_file,    	RT_NULL},
+	{PORT1, CAN_RX_DIRC, CAN_ID_M1CX,  CAN_ID_C1,  CAN_FUNC_IAP,   		8,     0,	   0,      0, 	(uint8_t *)&can.CanBuf.iap_reply,   (uint8_t *)&can.sCan.canAppBuf.iap_reply,    	RT_NULL},
 	
 	{PORT1, CAN_ZX_DIRC, CAN_ID_C1,    CAN_ID_M1,  CAN_FUNC_SET_PARA,   24,     0,	   0,      0, 	(uint8_t *)&can.CanBuf.Cb1WPara,   (uint8_t *)&can.sCan.Cb1WPara,    	RT_NULL},
 	{PORT1, CAN_ZX_DIRC, CAN_ID_C2,    CAN_ID_M1,  CAN_FUNC_SET_PARA,   24,     0,	   0,      0, 	(uint8_t *)&can.CanBuf.Cb2WPara,   (uint8_t *)&can.sCan.Cb2WPara,    	RT_NULL},
@@ -140,13 +145,13 @@ void CanApp::CycleMsgPush(void)
 			if(_std_msg[ScanFrame].FuncID == CAN_FUNC_S_POLL)
 			{
 				_askS_sheet++;
-				_std_msg[ScanFrame].CanBuffData[0] = _askS_sheet;
+				_std_msg[ScanFrame].Dest = _askS_sheet;
 				_askS_sheet = _askS_sheet % 5;
 			}
 			else if(_std_msg[ScanFrame].FuncID == CAN_FUNC_P_POLL)
 			{
 				_askP_sheet++;
-				_std_msg[ScanFrame].CanBuffData[0] = _askP_sheet;
+				_std_msg[ScanFrame].Dest = _askP_sheet;
 				_askP_sheet = _askP_sheet % 5;
 			}
 			//-----------------------------------------------------------------
@@ -215,8 +220,9 @@ void CanApp::TriggerMsgPush(void)
 	uint8_t Sendlen = 0;
 	uint8_t ScanFrame = 0; 
 	uint8_t frameCnt = 0;
-	static uint8_t _askP_sheet = 0;
-	
+	uint8_t i;
+	static int iapSheet;
+	static int index;
 	//-----------------------------------------------------------------
 	// 扫描端口信息
 	//------------------------------------------------------------------
@@ -231,14 +237,23 @@ void CanApp::TriggerMsgPush(void)
 
 			if((_std_msg[ScanFrame].CanBuffData == RT_NULL) && (_std_msg[ScanFrame].len > 0))
 				continue;
-			//-----------------------------------------------------------------
-			// 轮询帧
-			//------------------------------------------------------------------
-			if(_std_msg[ScanFrame].FuncID == CAN_FUNC_P_POLL)
+			//iap
+			if (_std_msg[ScanFrame].FuncID == CAN_FUNC_IAP_INFO || _std_msg[ScanFrame].FuncID == CAN_FUNC_IAP_WRITE
+			  ||_std_msg[ScanFrame].FuncID == CAN_FUNC_IAP_CHECK)
 			{
-				_askP_sheet++;
-				_std_msg[ScanFrame].CanBuffData[0] =  _askP_sheet;
-				_askP_sheet = _askP_sheet % 5;
+				if (iapSheet == 0)
+				{
+					iapSheet = CanStateWord;
+				}
+				for (i=0;i<8;i++)
+				{
+					if (iapSheet & (1 << i))
+					{
+						iapSheet = iapSheet >> i;
+						index += i + 1;
+						_std_msg[ScanFrame].Dest = index;
+					}
+				}
 			}
 			//-----------------------------------------------------------------
 			// 获取要发送端口数据长度
@@ -302,6 +317,7 @@ void CanApp::MsgRx_Manage(CAN_RX_DATA_RAM* pbuf, uint32_t _tId)
 	CAN_RX_DATA_RAM *_p  = pbuf;
 	PEXTID_UTYP _tRecStdId = (PEXTID_UTYP)&_tId;
 	uint8_t ScanFrame = 0; 
+	static int iapSheet = 0;
 
 	if(_p->parent.CanPort == PORT1)
 	{
@@ -348,6 +364,31 @@ void CanApp::MsgRx_Manage(CAN_RX_DATA_RAM* pbuf, uint32_t _tId)
 					CanFltCnt[4] = 0;
 				}
 
+			}
+			if (_std_msg[ScanFrame].FuncID == CAN_FUNC_IAP)
+			{
+				if (CanStateWord & (1 << _std_msg[ScanFrame].Src))
+				{
+					iapSheet |= 1 << _std_msg[ScanFrame].Src;
+				}
+				else if (iapSheet == CanStateWord)
+				{
+					check_file_call_back(0x0);
+					sCan.canAppBuf.iap_index ++;
+				}
+				else if (_std_msg[ScanFrame].AppBuffData[0] != 0)
+				{
+					check_file_call_back(0x81);
+				}
+//				if (_std_msg[ScanFrame].AppBuffData[0] == 0)
+//				{
+//					check_file_call_back(0x0);
+//					sCan.canAppBuf.iap_index ++;
+//				}
+//				else
+//				{
+//					check_file_call_back(0x81);
+//				}
 			}
 		}
 	}
@@ -555,6 +596,13 @@ void SendCan(uint8_t frame)
 		can.TriggerMsgUpdate_data(frame);
 		Bsp_can_send_trigger_event();
 	}
+}
+
+void iap_send(uint8_t frame, uint16_t lenth)
+{
+	_std_msg_table[frame].len = lenth+1;
+	_std_msg_table[frame].AppBuffData[lenth] = lenth + 1;
+	SendCan(frame);
 }
 
 //================================================================
