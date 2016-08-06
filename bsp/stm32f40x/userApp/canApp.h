@@ -27,7 +27,7 @@ public:
 	void TriggerMsgPush(void);
 	void MsgRx_Manage(CAN_RX_DATA_RAM* pbuf, uint32_t _tId);
 	static void MsgRx_Deal(CAN_RX_DATA_RAM* _p, EXTID_UTYP* _tRecId, uint8_t frame);
-	uint32_t MakeCanMsgExtID(uint8_t classID, uint8_t func,  uint8_t frame, uint8_t dest, uint8_t src);
+	uint32_t MakeCanMsgExtID(uint8_t classID, uint8_t func,  uint8_t frame, uint8_t dest, uint8_t src, uint8_t last);
 	void CanApp_MakeTxAckMsg(uint32_t extID, uint8_t len, uint8_t* data, CanTxMsg* msg);
 };
 

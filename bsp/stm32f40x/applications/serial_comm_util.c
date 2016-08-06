@@ -43,13 +43,15 @@ static void call_back(void * buffer, int length)
     {
     case 0xcc:
         {
+			file_write_index = 0;
 			iap_send(IAP_CMD_CHECK_FILE, 7);
         }
         return;
 
     case 'u':
         {
-            rt_memcpy(p->canAppBuf.iap_info, (uint8_t *)data + 2, length - 2);
+            file_write_index = 0;
+			rt_memcpy(p->canAppBuf.iap_info, (uint8_t *)data + 2, length - 2);
 			iap_send(IAP_CMD_SET_INFO, length - 2);
         }
         return;
@@ -58,11 +60,14 @@ static void call_back(void * buffer, int length)
         rx_file_index = (data[2] + (data[3] << 8));
 		if (p->canAppBuf.iap_index == file_write_index)
 		{
-			
+			usart_tx_data[0] = 0x00;
+			rt_memcpy(p->canAppBuf.iap_file, (uint8_t *)data + 4, length - 4);
+			iap_send(IAP_CMD_WRITE_FILE, length - 4);
 		}
         else if (rx_file_index == file_write_index)
         {
-            rt_memcpy(p->canAppBuf.iap_file, (uint8_t *)data + 4, length - 4);
+            usart_tx_data[0] = 0x00;
+			rt_memcpy(p->canAppBuf.iap_file, (uint8_t *)data + 4, length - 4);
             file_write_index++;
 			iap_send(IAP_CMD_WRITE_FILE, length - 4);
         }
